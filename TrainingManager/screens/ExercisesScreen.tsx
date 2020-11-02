@@ -32,7 +32,7 @@ const DATA = [
 ];
 
 interface Props {
-  navigation: StackNavigationProp<RootStackParamList, "Root">
+  navigation: StackNavigationProp<ExercisesParamList, "ExercisesScreen">
 }
 
 export default function ExercisesScreen({ navigation } : Props) {
@@ -47,9 +47,7 @@ export default function ExercisesScreen({ navigation } : Props) {
           )}
         />
         <TouchableOpacity style={styles.button}
-        onPress={() => navigation.navigate("Root", { 
-          screen: "Exercise"
-          })}>
+        onPress={() => navigation.navigate("AddExerciseScreen")}>
           <Text style={{fontSize: 60}}>+</Text>
         </TouchableOpacity>
       </SafeAreaView>

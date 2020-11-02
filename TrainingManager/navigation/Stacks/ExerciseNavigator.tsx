@@ -1,3 +1,4 @@
+import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import AddExerciseScreen from "../../screens/AddExerciseScreen";
 import ExercisesScreen from "../../screens/ExercisesScreen";
