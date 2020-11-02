@@ -9,6 +9,9 @@ import {
 import Constants from "expo-constants";
 import Item from "../components/List/Item"
 import { Icon } from "expo";
+import { NavigationState } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { ExercisesParamList, RootStackParamList } from "../types";
 const DATA = [
   {
     title: "Main dishes",
@@ -28,8 +31,11 @@ const DATA = [
   }
 ];
 
+interface Props {
+  navigation: StackNavigationProp<RootStackParamList, "Root">
+}
 
-function ExcersisesScreen() {
+export default function ExercisesScreen({ navigation } : Props) {
   return (
       <SafeAreaView style={styles.container}>
         <SectionList
@@ -40,22 +46,12 @@ function ExcersisesScreen() {
             <Text style={styles.header}>{title}</Text>
           )}
         />
-        <TouchableOpacity
-   style={{
-       borderWidth:1,
-       borderColor:'rgba(0,0,0,0.2)',
-       alignItems:'center',
-       justifyContent:'center',
-       width:70,
-       position: 'absolute',                                          
-       bottom: 10,                                                    
-       right: 10,
-       height:70,
-       backgroundColor:'#ffa500',
-       borderRadius:100,
-     }}
- ><Text style={{fontSize: 60}}>+</Text>
-  </TouchableOpacity>
+        <TouchableOpacity style={styles.button}
+        onPress={() => navigation.navigate("Root", { 
+          screen: "Exercise"
+          })}>
+          <Text style={{fontSize: 60}}>+</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -70,7 +66,18 @@ const styles = StyleSheet.create({
     fontSize: 32,
     backgroundColor: "#ffa500",
     alignSelf: "center"
+  },
+  button: {
+    borderWidth:1,
+    borderColor:'rgba(0,0,0,0.2)',
+    alignItems:'center',
+    justifyContent:'center',
+    width:70,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    height:70,
+    backgroundColor:'#ffa500',
+    borderRadius:100,
   }
 });
-
-export default ExcersisesScreen;
