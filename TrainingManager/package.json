@@ -52,5 +52,10 @@
     "jest-expo": "~39.0.0",
     "typescript": "~3.9.5"
   },
+  "rnpm": {
+    "assets": [
+        "resources/fonts"
+    ]
+  },
   "private": true
 }

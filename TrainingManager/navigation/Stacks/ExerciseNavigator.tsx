@@ -12,12 +12,12 @@ export default function ExerciseNavigator() {
       <ExerciseStack.Screen
         name="ExercisesScreen"
         component={ExercisesScreen}
-        options={{ headerTitle: 'Exercises' }}
+        options={{ headerTitle: 'Exercises', headerTitleAlign:'center' }}
       />
       <ExerciseStack.Screen
         name="AddExerciseScreen"
         component={AddExerciseScreen}
-        options={{ headerTitle: 'Add exercises' }}
+        options={{ headerTitle: 'Add exercises', headerTitleAlign:'center'  }}
       />
     </ExerciseStack.Navigator>
   );

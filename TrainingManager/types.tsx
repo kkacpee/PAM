@@ -6,7 +6,7 @@ export type RootStackParamList = {
 export type BottomTabParamList = {
   Home: undefined;
   Calendar: undefined;
-  Exercises: undefined;
+  Atlas: undefined;
 };
 
 export type HomeParamList = {
@@ -20,4 +20,16 @@ export type CalendarParamList = {
 export type ExercisesParamList = {
   ExercisesScreen: undefined;
   AddExerciseScreen: undefined;
+};
+
+export type AtlasParamList = {
+  AtlasScreen: undefined;
+  ExercisesScreen: undefined;
+  TrainingsScreen: undefined;
+};
+
+export type TrainingsParamList = {
+  AddTrainingScreen: undefined;
+  TrainingsScreen: undefined;
+  TrainingDetailsScreen: undefined;
 };

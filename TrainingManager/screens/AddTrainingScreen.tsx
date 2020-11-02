@@ -12,7 +12,7 @@ import { Button, Input } from 'react-native-elements';
 import OrangeTheme from "../constants/OrangeTheme";
 
 
-export default function AddExerciseScreen() {
+export default function AddTrainingScreen() {
   const [selectedValue, setSelectedValue] = useState("Reps");
   
     return (
@@ -30,28 +30,17 @@ export default function AddExerciseScreen() {
           multiline = {true}
           numberOfLines = {4}
         />
-        <Text style={{color: OrangeTheme.colors.text, alignSelf:'center'}}>Type</Text>
-        <View style={styles.pickerContainer}>
+        <Text style={{color: OrangeTheme.colors.text, alignSelf:'center'}}>Icon</Text>
+        <View style={{ borderWidth: 1, borderColor: OrangeTheme.colors.border, borderRadius: 4}}>
         <Picker
         selectedValue={selectedValue}
         style={styles.picker}
         onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue.toString())}
         itemStyle={styles.item}
+        prompt='Choose icon'
         >
           <Picker.Item label="Reps" value="reps" />
           <Picker.Item label="Time" value="time" />
-        </Picker>
-        </View>
-        <Text style={{color: OrangeTheme.colors.text, alignSelf:'center'}}>Category</Text>
-        <View style={styles.pickerContainer}>
-        <Picker
-        selectedValue={selectedValue}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue.toString())}
-        itemStyle={styles.item}
-        >
-          <Picker.Item label="Klata" value="reps" />
-          <Picker.Item label="Plery" value="time" />
         </Picker>
         </View>
         <View style={{marginTop: 50}}>
@@ -96,12 +85,6 @@ export default function AddExerciseScreen() {
       borderWidth: 2,
       borderStyle: 'solid',
       borderColor: OrangeTheme.colors.text
-    },
-    pickerContainer: {
-      borderWidth: 1, 
-      borderColor: OrangeTheme.colors.border, 
-      borderRadius: 4, 
-      marginBottom:5
     },
     item:{
       backgroundColor: OrangeTheme.colors.background,

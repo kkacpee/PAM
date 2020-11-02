@@ -7,7 +7,9 @@ import useColorScheme from '../hooks/useColorScheme';
 import { BottomTabParamList } from '../types';
 import HomeNavigator from './Stacks/HomeNavigator';
 import CalendarNavigator from './Stacks/CalendarNavigator';
-import ExerciseNavigator from './Stacks/ExerciseNavigator';
+import AtlasNavigator from './Stacks/AtlasNavigator';
+import AtlasScreen from '../screens/AtlasScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -20,7 +22,7 @@ export default function BottomTabNavigator() {
       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
       <BottomTab.Screen
         name="Home"
-        component={HomeNavigator}
+        component={HomeScreen}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-home" color={color} />,
         }}
@@ -33,8 +35,8 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="Exercises"
-        component={ExerciseNavigator}
+        name="Atlas"
+        component={AtlasNavigator}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="ios-list" color={color} />,
         }}

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -8,10 +8,9 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import Item from "../components/List/Item"
-import { Icon } from "expo";
-import { NavigationState } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ExercisesParamList, RootStackParamList } from "../types";
+import OrangeTheme from "../constants/OrangeTheme";
 const DATA = [
   {
     title: "Main dishes",
@@ -58,11 +57,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: Constants.statusBarHeight,
-    backgroundColor: "#ffa500",
+    backgroundColor: OrangeTheme.colors.background
   },
   header: {
     fontSize: 32,
-    backgroundColor: "#ffa500",
+    color: OrangeTheme.colors.text,
+    backgroundColor: OrangeTheme.colors.background,
+    textAlign:'center',
+    width: '100%',
+    borderTopColor: OrangeTheme.colors.border,
+    borderBottomColor: OrangeTheme.colors.border,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
     alignSelf: "center"
   },
   button: {
