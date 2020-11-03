@@ -4,7 +4,8 @@ import {
   Text,
   SafeAreaView,
   SectionList,
-  TouchableOpacity
+  TouchableOpacity,
+  ImageBackground
 } from "react-native";
 import Constants from "expo-constants";
 import Item from "../components/List/Item"
@@ -37,18 +38,20 @@ interface Props {
 export default function ExercisesScreen({ navigation } : Props) {
   return (
       <SafeAreaView style={styles.container}>
-        <SectionList
-          sections={DATA}
-          keyExtractor={(item, index) => item + index}
-          renderItem={({ item }) => <Item title={item} />}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={styles.header}>{title}</Text>
-          )}
-        />
-        <TouchableOpacity style={styles.button}
-        onPress={() => navigation.navigate("AddExerciseScreen")}>
-          <Text style={{fontSize: 60}}>+</Text>
-        </TouchableOpacity>
+        <ImageBackground source={require('../assets/images/ExerciseBg.png')} style={styles.image}>
+            <SectionList
+              sections={DATA}
+              keyExtractor={(item, index) => item + index}
+              renderItem={({ item }) => <Item title={item} />}
+              renderSectionHeader={({ section: { title } }) => (
+                <Text style={styles.header}>{title}</Text>
+              )}
+            />
+            <TouchableOpacity style={styles.button}
+            onPress={() => navigation.navigate("AddExerciseScreen")}>
+              <Text style={{fontSize: 60}}>+</Text>
+          </TouchableOpacity>
+        </ImageBackground> 
       </SafeAreaView>
     );
   }
@@ -57,12 +60,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: Constants.statusBarHeight,
-    backgroundColor: OrangeTheme.colors.background
+    backgroundColor: OrangeTheme.colors.background,
   },
   header: {
     fontSize: 32,
     color: OrangeTheme.colors.text,
-    backgroundColor: OrangeTheme.colors.background,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     textAlign:'center',
     width: '100%',
     borderTopColor: OrangeTheme.colors.border,
@@ -83,5 +86,10 @@ const styles = StyleSheet.create({
     height:70,
     backgroundColor:'#ffa500',
     borderRadius:100,
+  },
+  image: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center'
   }
 });

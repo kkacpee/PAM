@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-elements';
 import { Text, View } from '../components/Themed';
 import OrangeTheme from '../constants/OrangeTheme';
@@ -13,38 +13,63 @@ interface Props {
 export default function AtlasScreen({ navigation } : Props) {
   return (
     <View style={styles.view}>
-      <Card containerStyle={styles.container}>
-        <TouchableOpacity onPress={() => navigation.navigate("TrainingsScreen")}>
-            <Text style={{alignSelf:'center', color:OrangeTheme.colors.text}}>Trainings</Text>
-            <Image
-            style={{width:'100%', height:'95%', resizeMode: 'contain'}}
+                <View style={styles.container}>
+            <ImageBackground
+            style={styles.image}
             source={require('../assets/images/Training.png')}
-            />
-        </TouchableOpacity>
-      </Card>
-      <Card containerStyle={styles.container}>
-        <TouchableOpacity onPress={() => navigation.navigate("ExercisesScreen")}>
-            <Text style={{alignSelf:'center', color:OrangeTheme.colors.text}}>Exercises</Text>
-            <Image
-            style={{width:'100%', height:'95%', resizeMode: 'contain'}}
+            > 
+            <TouchableOpacity onPress={() => navigation.navigate("TrainingsScreen")} style={styles.imageOverlay}>
+                <Text style={styles.text}>Trainings</Text>    
+            </TouchableOpacity>
+            </ImageBackground>
+        </View>
+        <View style={styles.container}>
+            <ImageBackground
+            style={styles.image}
             source={require('../assets/images/Excersise.png')}
-            />
-        </TouchableOpacity>
-      </Card>
+            > 
+            <TouchableOpacity onPress={() => navigation.navigate("ExercisesScreen")} style={styles.imageOverlay}>
+                <Text style={styles.text}>Exercises</Text>    
+            </TouchableOpacity>
+            </ImageBackground>
+        </View>
+        
     </View>
   );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         height:'50%', 
         backgroundColor: OrangeTheme.colors.background,
         borderColor: OrangeTheme.colors.border,
-        padding: 5,
+        justifyContent: 'center',
+        alignContent: 'center',
+        marginVertical: 2
     },
     view: {
         height: '100%',
-        backgroundColor: OrangeTheme.colors.background,
-        paddingBottom: 40
+        width: '100%',
+        backgroundColor: OrangeTheme.colors.background
+    },
+    image: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+      },
+    text: {
+        alignSelf:'center',
+        position:'absolute',
+        fontSize: 40,
+        textShadowColor: '#fff',
+        textShadowRadius: 2,
+        color:OrangeTheme.colors.text
+    },
+    imageOverlay:{
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)'
     }
 });
