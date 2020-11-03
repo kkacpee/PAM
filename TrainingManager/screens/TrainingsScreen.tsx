@@ -5,6 +5,7 @@ import { Text, View } from '../components/Themed';
 import OrangeTheme from '../constants/OrangeTheme';
 import { TrainingsParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Badge, Divider } from 'react-native-elements';
 
 interface Props {
     navigation: StackNavigationProp<TrainingsParamList, "TrainingsScreen">
@@ -15,11 +16,12 @@ export default function TrainingsScreen({ navigation } : Props) {
       <>
     <ImageBackground source={require('../assets/images/TrainingsBg.png')} style={styles.image}>
      <View style={styles.container}>
+     <Text style={{color:OrangeTheme.colors.text, alignSelf: "center"}}>Favourites</Text>
         <View style={styles.row} >
             <View style={styles.column} >
                 <TouchableOpacity 
                     onPress={() => navigation.navigate('TrainingDetailsScreen', {trainingId: 1})}>
-                    <Text style={{color:OrangeTheme.colors.text, alignSelf:'center'}}>Cardio</Text>
+                    <Text style={{color:OrangeTheme.colors.text, alignSelf:'center', fontWeight: "bold"}}>Cardio</Text>
                     <MaterialCommunityIcons name="run-fast" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
                 </TouchableOpacity>
             </View>
@@ -35,6 +37,7 @@ export default function TrainingsScreen({ navigation } : Props) {
                 <MaterialCommunityIcons name="run-fast" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
             </View>
         </View>
+        <Divider style={{backgroundColor:OrangeTheme.colors.text, width:'100%', height: 2, marginTop:10}} />
         <View style={styles.row} >
             <View style={styles.column} >
                 <Text style={{color:OrangeTheme.colors.text, alignSelf:'center'}}>Cardio</Text>
@@ -82,7 +85,8 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         borderColor: OrangeTheme.colors.border,
         borderWidth: 1,
-        margin: 10,
+        marginBottom: 10,
+        marginHorizontal: 10,
         padding: 5,
         flex: 1, 
         flexDirection: 'column'
