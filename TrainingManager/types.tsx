@@ -1,3 +1,5 @@
+import { RouteProp } from "@react-navigation/native";
+
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
@@ -31,5 +33,5 @@ export type AtlasParamList = {
 export type TrainingsParamList = {
   AddTrainingScreen: undefined;
   TrainingsScreen: undefined;
-  TrainingDetailsScreen: undefined;
+  TrainingDetailsScreen: { trainingId: number};
 };

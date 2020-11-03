@@ -1,15 +1,20 @@
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import OrangeTheme from '../constants/OrangeTheme';
+import { TrainingsParamList } from '../types';
 
-export default function TrainingDetailsScreen() {
+interface Props {
+    route: RouteProp<TrainingsParamList, 'TrainingDetailsScreen'>
+    navigation: StackNavigationProp<TrainingsParamList, 'TrainingDetailsScreen'>
+  }
+
+
+export default function TrainingDetailsScreen({route, navigation}: Props) {
   return (
     <View >
-      <Text >Dupa</Text>
-      <View lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/HomeScreen.js" />
+      <Text style={{color: OrangeTheme.colors.text}} >Training number: {route.params.trainingId}</Text>
     </View>
   );
 }

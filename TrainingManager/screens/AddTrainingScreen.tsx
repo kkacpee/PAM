@@ -1,46 +1,49 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import {
-  StyleSheet,
   Text,
   SafeAreaView,
-  SectionList,
-  TouchableOpacity,
   View
 } from "react-native";
 import {  Picker } from "@react-native-community/picker"
 import { Button, Input } from 'react-native-elements';
 import OrangeTheme from "../constants/OrangeTheme";
-
+import styles from '../constants/AddScreenStyles'
 
 export default function AddTrainingScreen() {
   const [selectedValue, setSelectedValue] = useState("Reps");
-  
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+
     return (
       <SafeAreaView style={styles.container}>
         <Input
-          placeholder='Name'
-          
+            label="Name"
+            labelStyle={styles.inputLabel}
+          value={name}
+          onChangeText={(itemValue) => setName(itemValue)}
           inputStyle={styles.input}
           inputContainerStyle={{borderColor: OrangeTheme.colors.border}}
         />
         <Input
-          placeholder='Description'
-          inputStyle={styles.input}
-          inputContainerStyle={{borderColor: OrangeTheme.colors.border}}
-          multiline = {true}
-          numberOfLines = {4}
+        label="Description"
+        labelStyle={styles.inputLabel}
+        value={description}
+        onChangeText={(itemValue) => setDescription(itemValue)}
+        inputStyle={styles.input}
+        inputContainerStyle={{borderColor: OrangeTheme.colors.border}}
+        multiline = {true}
+        numberOfLines = {4}
         />
-        <Text style={{color: OrangeTheme.colors.text, alignSelf:'center'}}>Icon</Text>
-        <View style={{ borderWidth: 1, borderColor: OrangeTheme.colors.border, borderRadius: 4}}>
+        <Text style={styles.pickerLabel}>Icon</Text>
+        <View style={styles.pickerContainer}>
         <Picker
         selectedValue={selectedValue}
         style={styles.picker}
         onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue.toString())}
         itemStyle={styles.item}
-        prompt='Choose icon'
         >
-          <Picker.Item label="Reps" value="reps" />
-          <Picker.Item label="Time" value="time" />
+          <Picker.Item label="Siema" value="reps" />
+          <Picker.Item label="Niema" value="time" />
         </Picker>
         </View>
         <View style={{marginTop: 50}}>
@@ -55,39 +58,3 @@ export default function AddTrainingScreen() {
       </SafeAreaView>
     );
   }
-  
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      marginVertical: 30,
-      width: '80%',
-      alignSelf: 'center'
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
-    separator: {
-      marginVertical: 30,
-      height: 1,
-      width: '80%',
-    },
-    input: {
-      color: OrangeTheme.colors.text
-    },
-    picker: {
-      height: 50, 
-      width: 150,
-      color: OrangeTheme.colors.text,
-      borderWidth: 2,
-      borderStyle: 'solid',
-      borderColor: OrangeTheme.colors.text
-    },
-    item:{
-      backgroundColor: OrangeTheme.colors.background,
-      color: OrangeTheme.colors.text
-    }
-  });

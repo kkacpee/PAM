@@ -1,53 +1,58 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import {
-  StyleSheet,
   Text,
   SafeAreaView,
-  SectionList,
-  TouchableOpacity,
   View
 } from "react-native";
 import {  Picker } from "@react-native-community/picker"
 import { Button, Input } from 'react-native-elements';
 import OrangeTheme from "../constants/OrangeTheme";
-
+import styles from '../constants/AddScreenStyles'
 
 export default function AddExerciseScreen() {
-  const [selectedValue, setSelectedValue] = useState("Reps");
-  
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState("Reps");
+  const [category, setCategory] = useState("Klata");
+
     return (
       <SafeAreaView style={styles.container}>
         <Input
-          placeholder='Name'
-          
+          label="Name"
+          labelStyle={styles.inputLabel}
+          value={name}
+          onChangeText={(itemValue) => setName(itemValue)}
           inputStyle={styles.input}
           inputContainerStyle={{borderColor: OrangeTheme.colors.border}}
         />
         <Input
-          placeholder='Description'
+          label="Description"
+          labelStyle={styles.inputLabel}
+          value={description}
+          onChangeText={(itemValue) => setDescription(itemValue)}
           inputStyle={styles.input}
           inputContainerStyle={{borderColor: OrangeTheme.colors.border}}
           multiline = {true}
           numberOfLines = {4}
         />
-        <Text style={{color: OrangeTheme.colors.text, alignSelf:'center'}}>Type</Text>
+        <Text style={styles.pickerLabel}>Type</Text>
         <View style={styles.pickerContainer}>
         <Picker
-        selectedValue={selectedValue}
+        selectedValue={type}
         style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue.toString())}
+        onValueChange={(itemValue, itemIndex) => setType(itemValue.toString())}
         itemStyle={styles.item}
         >
           <Picker.Item label="Reps" value="reps" />
           <Picker.Item label="Time" value="time" />
         </Picker>
         </View>
-        <Text style={{color: OrangeTheme.colors.text, alignSelf:'center'}}>Category</Text>
+        <Text style={styles.pickerLabel}>Category</Text>
         <View style={styles.pickerContainer}>
         <Picker
-        selectedValue={selectedValue}
+        selectedValue={category}
         style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue.toString())}
+        onValueChange={(itemValue, itemIndex) => setCategory(itemValue.toString())}
         itemStyle={styles.item}
         >
           <Picker.Item label="Klata" value="reps" />
@@ -66,45 +71,3 @@ export default function AddExerciseScreen() {
       </SafeAreaView>
     );
   }
-  
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      marginVertical: 30,
-      width: '80%',
-      alignSelf: 'center'
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
-    separator: {
-      marginVertical: 30,
-      height: 1,
-      width: '80%',
-    },
-    input: {
-      color: OrangeTheme.colors.text
-    },
-    picker: {
-      height: 50, 
-      width: 150,
-      color: OrangeTheme.colors.text,
-      borderWidth: 2,
-      borderStyle: 'solid',
-      borderColor: OrangeTheme.colors.text
-    },
-    pickerContainer: {
-      borderWidth: 1, 
-      borderColor: OrangeTheme.colors.border, 
-      borderRadius: 4, 
-      marginBottom:5
-    },
-    item:{
-      backgroundColor: OrangeTheme.colors.background,
-      color: OrangeTheme.colors.text
-    }
-  });

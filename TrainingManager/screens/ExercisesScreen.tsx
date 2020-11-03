@@ -10,7 +10,7 @@ import {
 import Constants from "expo-constants";
 import Item from "../components/List/Item"
 import { StackNavigationProp } from "@react-navigation/stack";
-import { ExercisesParamList, RootStackParamList } from "../types";
+import { ExercisesParamList } from "../types";
 import OrangeTheme from "../constants/OrangeTheme";
 const DATA = [
   {

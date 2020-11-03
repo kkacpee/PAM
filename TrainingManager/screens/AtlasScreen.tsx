@@ -1,7 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
 import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
-import { Card } from 'react-native-elements';
 import { Text, View } from '../components/Themed';
 import OrangeTheme from '../constants/OrangeTheme';
 import { AtlasParamList } from '../types';

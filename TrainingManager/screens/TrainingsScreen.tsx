@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import OrangeTheme from '../constants/OrangeTheme';
 import { TrainingsParamList } from '../types';
@@ -15,15 +13,22 @@ interface Props {
 export default function TrainingsScreen({ navigation } : Props) {
   return (
       <>
+    <ImageBackground source={require('../assets/images/TrainingsBg.png')} style={styles.image}>
      <View style={styles.container}>
         <View style={styles.row} >
             <View style={styles.column} >
-                <Text style={{color:OrangeTheme.colors.text, alignSelf:'center'}}>Cardio</Text>
-                <MaterialCommunityIcons name="run-fast" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('TrainingDetailsScreen', {trainingId: 1})}>
+                    <Text style={{color:OrangeTheme.colors.text, alignSelf:'center'}}>Cardio</Text>
+                    <MaterialCommunityIcons name="run-fast" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+                </TouchableOpacity>
             </View>
             <View style={styles.column} >
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('TrainingDetailsScreen', {trainingId: 2})}>
                 <Text style={{color:OrangeTheme.colors.text, alignSelf:'center'}}>Bieg</Text>
                 <MaterialCommunityIcons name="run-fast" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+                </TouchableOpacity>
             </View>
             <View style={styles.column} >
                 <Text style={{color:OrangeTheme.colors.text, alignSelf:'center'}}>Trucht</Text>
@@ -44,9 +49,9 @@ export default function TrainingsScreen({ navigation } : Props) {
                 <MaterialCommunityIcons name="run-fast" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
             </View>
         </View>
-
     </View>
-    <TouchableOpacity style={styles.button}
+    </ImageBackground>
+        <TouchableOpacity style={styles.button}
         onPress={() => navigation.navigate("AddTrainingScreen")}>
           <Text style={{fontSize: 60}}>+</Text>
         </TouchableOpacity>
@@ -56,20 +61,23 @@ export default function TrainingsScreen({ navigation } : Props) {
 
 const styles = StyleSheet.create({
     container: {
-        height:'50%', 
-        backgroundColor: OrangeTheme.colors.background,
+        height:'100%', 
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
         padding: 5,
+        justifyContent: 'flex-start',
+        alignContent: 'flex-start'
     },
     row: {
-        height: '25%',
-        backgroundColor: OrangeTheme.colors.background,
-        flex: 1, 
-        flexDirection: 'row'
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        flex: 0.25, 
+        flexDirection: 'row',
+        marginVertical: 10
     },
     column: {
         height: '100%',
         width: '30%',
-        backgroundColor: OrangeTheme.colors.background,
+        backgroundColor: 'rgba(0, 0, 0, 1)',
         paddingBottom: 40,
         justifyContent:'center',
         borderColor: OrangeTheme.colors.border,
@@ -94,5 +102,13 @@ const styles = StyleSheet.create({
         height:70,
         backgroundColor:'#ffa500',
         borderRadius:100,
+      },
+      image: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center'
+      },
+      overlay: {
+          backgroundColor: 'rgba(0, 0, 0, 0.2)'
       }
 });
