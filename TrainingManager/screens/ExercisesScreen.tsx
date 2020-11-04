@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,22 +12,24 @@ import Item from "../components/List/Item"
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ExercisesParamList } from "../types";
 import OrangeTheme from "../constants/OrangeTheme";
-const DATA = [
+import { connection } from '../App';
+import { Exercise } from "../src/data/models/Exercise";
+let dataInitial = [
   {
-    title: "Main dishes",
-    data: ["Pizza", "Burger", "Risotto"]
+    title: "Chest",
+    data: ["Bench press", "Flys"]
   },
   {
-    title: "Sides",
-    data: ["French Fries", "Onion Rings", "Fried Shrimps"]
+    title: "Back",
+    data: ["Pull ups", "Bent-over rows"]
   },
   {
-    title: "Drinks",
-    data: ["Water", "Coke", "Beer"]
+    title: "Shoulders",
+    data: ["Military press", "Lateral raises"]
   },
   {
-    title: "Desserts",
-    data: ["Cheese Cake", "Ice Cream"]
+    title: "Legs",
+    data: ["Back squat", "Deadlift"]
   }
 ];
 
@@ -36,6 +38,29 @@ interface Props {
 }
 
 export default function ExercisesScreen({ navigation } : Props) {
+  const [DATA, setDATA] = useState(dataInitial);
+
+  const callback = useCallback(() => loadData(), []);
+
+  useEffect(() =>{
+    callback()
+      .then(res => {
+        res.forEach((v, i, all) => {
+          var item = DATA.find((v1, i1, all1) => v1.title == v.title);
+          if (item == null){
+            DATA.push(v);
+            console.log("Dodano całość");
+          }
+          else{
+            (v1, i1, all1) => item.data.push(...v.data);
+            console.log("Dodano do istniejącego");
+          }
+        })
+        setDATA(DATA);
+      }, 
+            err => console.log(err));
+  });
+
   return (
       <SafeAreaView style={styles.container}>
         <ImageBackground source={require('../assets/images/ExerciseBg.png')} style={styles.image}>
@@ -93,3 +118,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
+
+
+
+async function loadData() {
+  var exerciseRepository = connection.getRepository(Exercise);
+
+  var exercises = await exerciseRepository.find(); //GETALL WITH A WEIRD NAME
+
+  var result = new Array<{title: string, data : Array<string>}>();
+
+  exercises.forEach(x => {
+    var item = result.find((v, i, all) => v.title == x.category.name);
+    if (item == null){
+      item = {title: x.category.name, data: new Array<string>()};
+      result.push(item);
+    }
+
+    item.data.push(x.name);
+  });
+
+  console.log(result);
+
+  return result;
+}

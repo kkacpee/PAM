@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Swipeout from 'react-native-swipeout';
 import {
   StyleSheet,
@@ -7,16 +7,17 @@ import {
   View
 } from "react-native";
 
-let swipeBtns = [{
+
+
+function Item({ title}: { title: string }) {
+  const [btns, setButtons] = useState([{
     text: 'Delete',
     backgroundColor: 'red',
     underlayColor: 'rgba(0, 0, 0, 1, 0.6)'
     //onPress: () => { this.deleteNote(rowData) }
-  }];
+  }]);
 
-const Item = ({ title}: { title: string }) => (
-    
-    <Swipeout right={swipeBtns}
+  return  <Swipeout right={btns}
     autoClose= {true}
     backgroundColor= 'transparent'>
     <TouchableHighlight
@@ -28,7 +29,7 @@ const Item = ({ title}: { title: string }) => (
         </View>
     </TouchableHighlight>
   </Swipeout>
-  );
+}
 
   const styles = StyleSheet.create({
     title: {

@@ -1,25 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm/browser";
 import { TrainingHistory } from "./TrainingHistory";
 import { TrainingPlanEntry } from "./TrainingPlanEntry";
 
 @Entity()
 export class TrainingPlan {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("increment")
     id: number;
 
     @Column({
-        length: 50
+        length: 50,
+        type: "varchar"
     })
     name: string;
 
-    @Column()
+    @Column("boolean")
     isActive: boolean;
 
-    @Column()
+    @Column("boolean")
     pushNotification: boolean;
 
-    @Column()
+    @Column("boolean")
     alarm: boolean;
 
     @OneToMany(() => TrainingHistory, history => history.trainingPlan)

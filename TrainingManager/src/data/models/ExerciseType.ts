@@ -1,14 +1,15 @@
-import { Entity, Column, PrimaryColumn, OneToMany} from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToMany, PrimaryGeneratedColumn} from "typeorm/browser";
 import { Exercise } from "./Exercise";
 
 @Entity()
 export class ExerciseType {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn("increment")
     id: number;
 
     @Column({
-        length: 50
+        length: 50,
+        type: "varchar"
     })
     name: string;
 

@@ -1,23 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable } from "typeorm/browser";
 import { Training } from "./Training";
 import { TrainingPlan } from "./TrainingPlan";
 
 @Entity()
 export class TrainingPlanEntry {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("increment")
     id: number;
 
-    @Column()
+    @Column("int")
     idTraining: number;
 
-    @Column()
+    @Column("int")
     idTrainingPlan: number;
 
-    @Column()
+    @Column("float")
     multiplier: number;
 
-    @Column()
+    @Column("datetime")
     date: Date;
 
     @ManyToOne(() => Training, training => training.entries)

@@ -1,26 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable } from "typeorm/browser";
 import { Exercise } from "./Exercise";
 import { Training } from "./Training";
 
 @Entity()
 export class TrainingEntry {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("increment")
     id: number;
 
-    @Column()
+    @Column("int")
     idExercise: number;
 
-    @Column()
+    @Column("int")
     idTraining: number;
 
-    @Column()
+    @Column("int")
     repCount: number;
 
-    @Column()
-    executionTime: number; 
+    @Column("int")
+    executionTime: number; //stored as number of seconds
 
-    @Column()
+    @Column("int")
     order: number;
 
     @ManyToOne(() => Exercise, exercise => exercise.entries)

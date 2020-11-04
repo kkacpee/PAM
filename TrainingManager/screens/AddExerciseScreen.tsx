@@ -8,8 +8,18 @@ import {  Picker } from "@react-native-community/picker"
 import { Button, Input } from 'react-native-elements';
 import OrangeTheme from "../constants/OrangeTheme";
 import styles from '../constants/AddScreenStyles'
+import { connection } from '../App';
+import { ExerciseType } from "../src/data/models/ExerciseType";
+import { ExerciseCategory } from "../src/data/models/ExerciseCategory";
+import { Exercise } from "../src/data/models/Exercise";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { AtlasParamList } from "../types";
 
-export default function AddExerciseScreen() {
+interface Props {
+  navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">
+}
+
+export default function AddExerciseScreen({ navigation } : Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("Reps");
@@ -65,9 +75,59 @@ export default function AddExerciseScreen() {
           type="outline"
           titleStyle={{color: OrangeTheme.colors.text}}
           buttonStyle={{borderWidth: 1, borderColor: OrangeTheme.colors.border, borderRadius: 4}}
+          onPress={() => addAndNavigateBack(name, description, type, category, navigation)}
         /> 
         </View>
-        
+        <Text style={{display: "none"}}>Baza świruje coś.</Text>
       </SafeAreaView>
     );
+  }
+
+  function addAndNavigateBack(
+    p_name : string, 
+    p_desc : string, 
+    p_type : string, 
+    p_category : string,
+    navigation : StackNavigationProp<AtlasParamList, "AtlasScreen">) {
+
+      addToDB(p_name, p_desc, p_type, p_category)
+        .then(() => navigation.navigate("ExercisesScreen"), x => console.log(x));
+  }
+
+  async function addToDB(
+    p_name : string, 
+    p_desc : string, 
+    p_type : string, 
+    p_category : string) {
+
+      var typeRepository = connection.getRepository(ExerciseType);
+      var categoryRepository = connection.getRepository(ExerciseCategory);
+      var exerciseRepository = connection.getRepository(Exercise);
+      console.log("MOMY REPOZYTORIA");
+
+      //OPERATION SHOULD BE WRAPPED IN TRANSACTION
+      var type = await typeRepository.findOne({ name : p_name});
+
+      if (!type){
+        type = typeRepository.create();
+        type.name = p_name;
+        type = await typeRepository.save(type);
+      }
+
+      var category = await categoryRepository.findOne({ name: p_category});
+
+      if (!category){
+        category = categoryRepository.create();
+        category.name = p_category;
+        category = await categoryRepository.save(category);
+      }
+
+      var exercise = await exerciseRepository.create();
+      exercise.name = p_name;
+      exercise.description = p_desc;
+      exercise.category = category;
+      exercise.type = type;
+      exercise.isActive = true;
+      console.log(exercise);
+      exerciseRepository.save(exercise);
   }
