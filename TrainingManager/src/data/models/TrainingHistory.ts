@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn } from "typeorm/browser";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm/browser";
 import { Training } from "./Training";
 import { TrainingPlan } from "./TrainingPlan";
 
@@ -6,25 +6,25 @@ import { TrainingPlan } from "./TrainingPlan";
 export class TrainingHistory {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
     @Column("int")
-    idTraining: number;
+    idTraining!: number;
 
     @Column("int")
-    idTrainingPlan: number;
+    idTrainingPlan!: number;
 
     @Column("boolean")
-    isFinished: boolean;
+    isFinished!: boolean;
 
     @Column("datetime")
-    date: Date;
+    date!: Date;
 
     @ManyToOne(() => Training, training => training.history)
     @JoinColumn({ name: "idTraining"})
-    training: Training;
+    training!: Training;
 
     @ManyToOne(() => TrainingPlan, plan => plan.history)
     @JoinColumn({ name: "idTrainingPlan"})
-    trainingPlan: TrainingPlan;
+    trainingPlan!: TrainingPlan;
 }

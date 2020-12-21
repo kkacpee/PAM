@@ -1,19 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, OneToOne, OneToMany } from "typeorm/browser";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm/browser";
 import { Exercise } from "./Exercise";
 
 @Entity()
 export class ExerciseCategory {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
     @Column({
         length: 50,
         type: "varchar"
     })
-    name: string;
+    name!: string;
 
     @OneToMany(() => Exercise, exercise => exercise.category)
-    exercises: Exercise[];
+    exercises!: Exercise[];
 
 }

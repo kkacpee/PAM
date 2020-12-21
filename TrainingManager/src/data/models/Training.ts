@@ -7,26 +7,26 @@ import { TrainingPlanEntry } from "./TrainingPlanEntry";
 export class Training {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
     @Column({
         length: 50,
         type: "varchar"
     })
-    name: string;
+    name!: string;
 
     @Column("boolean")
-    isActive: boolean;
+    isActive!: boolean;
 
     @Column("boolean")
-    isFavourite: boolean;
+    isFavourite!: boolean;
 
     @OneToMany(() => TrainingHistory, history => history.training)
-    history: TrainingHistory[];
+    history!: TrainingHistory[];
 
     @OneToMany(() => TrainingEntry, entry => entry.training)
-    exercises: TrainingEntry[];
+    exercises!: TrainingEntry[];
 
     @OneToMany(() => TrainingPlanEntry, entry => entry.training)
-    entries: TrainingPlanEntry[];
+    entries!: TrainingPlanEntry[];
 }

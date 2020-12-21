@@ -6,25 +6,25 @@ import { TrainingPlan } from "./TrainingPlan";
 export class TrainingPlanEntry {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
     @Column("int")
-    idTraining: number;
+    idTraining!: number;
 
     @Column("int")
-    idTrainingPlan: number;
+    idTrainingPlan!: number;
 
     @Column("float")
-    multiplier: number;
+    multiplier!: number;
 
     @Column("datetime")
-    date: Date;
+    date!: Date;
 
     @ManyToOne(() => Training, training => training.entries)
     @JoinTable({ name: "idTraining" })
-    training: Training;
+    training!: Training;
 
     @ManyToOne(() => TrainingPlan, plan => plan.entries)
     @JoinTable({ name: "idTrainingPlan" })
-    trainingPlan: TrainingPlan;
+    trainingPlan!: TrainingPlan;
 }

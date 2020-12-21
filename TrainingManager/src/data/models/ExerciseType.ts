@@ -1,20 +1,20 @@
-import { Entity, Column, PrimaryColumn, OneToMany, PrimaryGeneratedColumn} from "typeorm/browser";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn} from "typeorm/browser";
 import { Exercise } from "./Exercise";
 
 @Entity()
 export class ExerciseType {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
     @Column({
         length: 50,
         type: "varchar"
     })
-    name: string;
+    name!: string;
 
     @OneToMany(() => Exercise, exercise => exercise.type)
-    exercises: Exercise[];
+    exercises!: Exercise[];
 }
 
 // TODO: Verify if this is the proper way to do it
