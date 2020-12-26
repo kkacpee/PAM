@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import { Agenda, Calendar, CalendarList } from 'react-native-calendars';
+
 import { View } from '../components/Themed';
 
 export default function CalendarScreen() {
   return (
     <View style={styles.container}>
-      <Calendar firstDay={1}></Calendar>
-      
+      <CalendarList></CalendarList>
     </View>
   );
 }

@@ -65,8 +65,8 @@ export default function AddExerciseScreen({ navigation } : Props) {
         onValueChange={(itemValue, itemIndex) => setCategory(itemValue.toString())}
         itemStyle={styles.item}
         >
-          <Picker.Item label="Klata" value="reps" />
-          <Picker.Item label="Plery" value="time" />
+          <Picker.Item label="Chest" value="Chest" />
+          <Picker.Item label="Back" value="Back" />
         </Picker>
         </View>
         <View style={{marginTop: 50}}>

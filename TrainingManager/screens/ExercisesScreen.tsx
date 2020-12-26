@@ -41,7 +41,7 @@ export default function ExercisesScreen({ navigation } : Props) {
   const [DATA, setDATA] = useState(dataInitial);
 
   const callback = useCallback(() => loadData(), []);
-
+  
   useEffect(() =>{
     callback()
       .then(res => {

@@ -10,6 +10,7 @@ export type BottomTabParamList = {
 };
 
 export type HomeParamList = {
+  OngoingTrainingScreen: undefined;
   HomeScreen: undefined;
 };
 
