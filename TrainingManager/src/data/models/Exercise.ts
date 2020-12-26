@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, OneToOne, OneToMany } from "typeorm/browser";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm/browser";
 import { ExerciseCategory } from "./ExerciseCategory";
 import { ExerciseType } from "./ExerciseType";
 import { TrainingEntry } from "./TrainingEntry";
@@ -7,38 +7,38 @@ import { TrainingEntry } from "./TrainingEntry";
 export class Exercise {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
     
     @Column("int")
-    idExerciseType: number;
+    idExerciseType!: number;
 
     @Column("int")
-    idExerciseCategory: number;
+    idExerciseCategory!: number;
 
     @Column( {
         length: 45,
         type: "varchar"
     })
-    name: string;
+    name!: string;
 
     @Column( {
         length: 200,
         type: "varchar"
     })
-    description: string;
+    description!: string;
 
     @Column("boolean")
-    isActive: boolean;
+    isActive!: boolean;
 
 
     @ManyToOne(() => ExerciseType, type => type.exercises, { eager: true})
     @JoinColumn({ name: "idExerciseType", referencedColumnName: "id" })
-    type: ExerciseType;
+    type!: ExerciseType;
 
     @ManyToOne(() => ExerciseCategory, category => category.exercises, { eager: true })
     @JoinColumn({ name: "idExerciseCategory", referencedColumnName: "id" })
-    category: ExerciseCategory;
+    category!: ExerciseCategory;
 
     @OneToMany(() => TrainingEntry, entry => entry.exercise)
-    entries: TrainingEntry[];
+    entries!: TrainingEntry[];
 }

@@ -6,26 +6,26 @@ import { TrainingPlanEntry } from "./TrainingPlanEntry";
 export class TrainingPlan {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
     @Column({
         length: 50,
         type: "varchar"
     })
-    name: string;
+    name!: string;
 
     @Column("boolean")
-    isActive: boolean;
+    isActive!: boolean;
 
     @Column("boolean")
-    pushNotification: boolean;
+    pushNotification!: boolean;
 
     @Column("boolean")
-    alarm: boolean;
+    alarm!: boolean;
 
     @OneToMany(() => TrainingHistory, history => history.trainingPlan)
-    history: TrainingHistory[];
+    history!: TrainingHistory[];
 
     @OneToMany(() => TrainingPlanEntry, entry => entry.trainingPlan)
-    entries: TrainingPlanEntry[];
+    entries!: TrainingPlanEntry[];
 }

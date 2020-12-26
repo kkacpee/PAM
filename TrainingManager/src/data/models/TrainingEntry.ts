@@ -6,29 +6,29 @@ import { Training } from "./Training";
 export class TrainingEntry {
 
     @PrimaryGeneratedColumn("increment")
-    id: number;
+    id!: number;
 
     @Column("int")
-    idExercise: number;
+    idExercise!: number;
 
     @Column("int")
-    idTraining: number;
+    idTraining!: number;
 
     @Column("int")
-    repCount: number;
+    repCount!: number;
 
     @Column("int")
-    executionTime: number; //stored as number of seconds
+    executionTime!: number; //stored as number of seconds
 
     @Column("int")
-    order: number;
+    order!: number;
 
     @ManyToOne(() => Exercise, exercise => exercise.entries)
     @JoinTable({ name: "idExercise" })
-    exercise: Exercise;
+    exercise!: Exercise;
 
     @ManyToOne(() => Training, training => training.exercises)
     @JoinTable({ name: "idTraining" })
-    training: Training;
+    training!: Training;
 
 }
