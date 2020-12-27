@@ -6,7 +6,7 @@ export default function Item({ title }: { title: string }) {
   const [btns] = useState([
     {
       text: "Delete",
-      backgroundColor: "red",
+      backgroundColor: "rgba(255, 0, 0, 0.7)",
       underlayColor: "rgba(0, 0, 0, 1, 0.6)",
       //onPress: () => { this.deleteNote(rowData) }
     },
@@ -15,7 +15,7 @@ export default function Item({ title }: { title: string }) {
   return (
     <Swipeout right={btns} autoClose={true} backgroundColor="transparent">
       <TouchableHighlight
-        underlayColor="rgba(192,192,192,1,0.6)"
+        underlayColor="rgba(192,192,192,1,0.1)"
         //onPress={this.viewNote.bind(this, rowData)}
       >
         <View style={styles.item}>
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     color: "#ffa500",
   },
   item: {
-    backgroundColor: "#000",
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     padding: 20,
   },
 });

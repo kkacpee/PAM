@@ -2,7 +2,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { useState } from "react";
 import { View } from "react-native";
-import { Button } from 'react-native-elements';
 import { StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OrangeTheme from "../constants/OrangeTheme";
 import { useEffect } from "react";

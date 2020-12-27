@@ -101,9 +101,31 @@ export default class ExerciseController extends BaseController {
     return types.map((x) => x.name);
   }
 
+  public addType(name: string) {
+          console.log(this.connection);
+    var typeRepo = this.connection.getRepository(ExerciseType);
+          console.log(typeRepo);
+    var type = typeRepo.create();
+          console.log(type);
+    type.name = name;
+          console.log(type);
+    typeRepo.save(type);
+  }
+
   public async getCategories(): Promise<string[]> {
     var catRepo = this.connection.getRepository(ExerciseCategory);
     var categories = await catRepo.find();
     return categories.map((x) => x.name);
+  }
+
+  public addCategory(name: string) {
+    console.log(this.connection);
+    var catRepo = this.connection.getRepository(ExerciseCategory);
+    console.log(catRepo);
+    var cat = catRepo.create();
+    console.log(cat);
+    cat.name = name;
+    console.log(cat);
+    catRepo.save(cat);
   }
 }

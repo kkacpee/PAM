@@ -8,7 +8,8 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start',
       marginVertical: 30,
       width: '80%',
-      alignSelf: 'center'
+      alignSelf: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0)'
     },
     title: {
       fontSize: 20,
@@ -20,7 +21,8 @@ const styles = StyleSheet.create({
       width: '80%',
     },
     input: {
-      color: OrangeTheme.colors.text
+      color: OrangeTheme.colors.text,
+      backgroundColor: 'rgba(0, 0, 0, 0.3)'
     },
     inputLabel: {
         color: OrangeTheme.colors.text,
@@ -28,20 +30,59 @@ const styles = StyleSheet.create({
     },
     picker: {
       height: 50, 
-      width: 150,
+      flex: 1,
       color: OrangeTheme.colors.text,
       borderWidth: 2,
       borderStyle: 'solid',
-      borderColor: OrangeTheme.colors.text
+      borderColor: OrangeTheme.colors.text,
+      backgroundColor: 'rgba(0, 0, 0, 0.3)'
+    },
+    plusButton: {
+      flex: 1,
+      borderWidth: 1,
+      borderRightWidth: 0,
+      borderTopWidth: 0,
+      borderBottomWidth: 0,
+      borderColor: OrangeTheme.colors.border,
+      borderRadius: 4,
+      backgroundColor:'rgba(0, 0, 0, 0.4)',
+      color: OrangeTheme.colors.text
+    },
+    addButton: {
+      borderWidth: 1,
+      borderColor: OrangeTheme.colors.border,
+      borderRadius: 4,
+      backgroundColor: 'rgba(0, 0, 0, 0.3)'
+    },
+    modalContainer: {
+      width: '80%',
+      borderWidth: 1,
+      borderColor: OrangeTheme.colors.border,
+      borderRadius: 4,
+      backgroundColor: OrangeTheme.colors.background,
+    },
+    modalOkButton: {
+      borderWidth: 1,
+      borderColor: OrangeTheme.colors.border,
+      borderRadius: 4,
+      width: '40%',
+      alignSelf: 'center',
+      backgroundColor: OrangeTheme.colors.background
+    },
+    image: {
+      flex: 1,
+      resizeMode: 'cover',
+      justifyContent: 'center'
     },
     pickerContainer: {
         borderWidth: 1, 
         borderColor: OrangeTheme.colors.border, 
         borderRadius: 4, 
-        marginBottom:5
+        marginBottom:5,
+        flexDirection: 'row'
       },
     item:{
-      backgroundColor: OrangeTheme.colors.background,
+      backgroundColor: 'rgba(0, 0, 0, 0.2)',
       color: OrangeTheme.colors.text
     },
     pickerLabel:{
