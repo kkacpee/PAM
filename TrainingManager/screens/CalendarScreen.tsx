@@ -1,31 +1,14 @@
-import * as React from 'react';
-import { StyleSheet } from 'react-native';
-import { Agenda, Calendar, CalendarList } from 'react-native-calendars';
+import React, {useState} from 'react';
+import {View, TouchableOpacity, Text} from 'react-native';
+import {Card} from 'react-native-elements';
 
-import { View } from '../components/Themed';
 
-export default function CalendarScreen() {
+const Schedule: React.FC = () => {
+
   return (
-    <View style={styles.container}>
-      <CalendarList></CalendarList>
+    <View style={{flex: 1}}>
     </View>
   );
-}
+};
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+export default Schedule;

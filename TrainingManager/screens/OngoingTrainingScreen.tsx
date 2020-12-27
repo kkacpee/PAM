@@ -4,26 +4,62 @@ import { Text, View } from '../components/Themed';
 import navigation from '../navigation';
 import OrangeTheme from '../constants/OrangeTheme';
 import { Button } from 'react-native-elements';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import TimedWorkout from '../components/TimedWorkout'
 import CountedWorkout from '../components/CountedWorkout';
 
 export default function OngoingTrainingScreen() {
+    const [timed, setTimed] = React.useState(true);
+    const [timerOn, setTimerOn] = React.useState(false);
+    const [min, setMin] = React.useState(10);
+    const [sec, setSec] = React.useState(0);
+    const [reps, setReps] = React.useState(10);
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ImageBackground source={require('../assets/images/WorkoutBg.png')} style={styles.image}>  
         <View style={styles.column}>
-
+        
             <Text style={styles.content}>Next: sit-ups</Text>
             <Text style={styles.headerToday}>Push-ups</Text>
+            
+            {/* {timed ? 
+             <>
+             <Text style={styles.timer}>{min}:{(sec > 9) ? sec : `0${sec}`}</Text>
 
-            {/* <TimedWorkout minutes={10} seconds={0} /> */}
-            <CountedWorkout reps={10} />
+            <View style={styles.row}>
+                <Button 
+                icon={
+                    <MaterialCommunityIcons name="pause" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+                }
+
+                onPress={() => console.log("siema")}>
+                
+            </Button>
+            <TouchableOpacity style={styles.button}
+             onPress={() => console.log("siema")}>
+            <MaterialCommunityIcons name="play" style={styles.icon} size={70} color={OrangeTheme.colors.text} 
+            />
+            </TouchableOpacity>
+            </View>
+             </>
+             :
+             <View >
+             <Text style={styles.timer}>{reps}</Text>
+     
+                <View style={styles.row}>
+                    <TouchableOpacity style={styles.button}>
+                    <MaterialIcons name="done" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+                    </TouchableOpacity>
+                </View>
+             </View>
+            } */}
+           <TimedWorkout seconds={5} minutes={0} />
+            {/* <CountedWorkout reps={10} /> */}
         </View>
 
 
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 }
 

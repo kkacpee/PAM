@@ -1,24 +1,68 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
+import { useState } from "react";
 import { View } from "react-native";
+import { Button } from 'react-native-elements';
 import { StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OrangeTheme from "../constants/OrangeTheme";
+import { useEffect } from "react";
 
+export const delay = (ms:any) => new Promise((res) => setTimeout(res, ms));
 
 function TimedWorkout({ minutes, seconds}: { minutes: number, seconds: number }) {
+    const [second, setSecond] = useState(`${seconds}`);
+    const [minute, setMinute] = useState(`${minutes}`);
+    const [isActive, setIsActive] = useState(false);
+    const [counter, setCounter] = useState(minutes * 60 + seconds);
+
+    useEffect(() => {
+        let intervalId;
+    
+        if (isActive) {
+          intervalId = setInterval(() => {
+            console.log(counter);
+            const secondCounter = counter % 60;
+            const minuteCounter = Math.floor(counter / 60);
+    
+         
+
+            const computedSecond = String(secondCounter).length === 1 ? `0${secondCounter}`: String(secondCounter);
+            const computedMinute = String(minuteCounter).length === 1 ? `0${minuteCounter}`: String(minuteCounter);
+    
+            setSecond(computedSecond);
+            setMinute(computedMinute);
+    
+            if(counter === 0){
+                setIsActive(false);
+            }
+            else {
+                setCounter(counter => counter - 1);
+            }
+          }, 1000)
+        }
+    
+        return () => clearInterval(intervalId);
+      }, [isActive, counter])
+
     return (
-        <View>
-        <Text style={styles.timer}>{minutes}:{seconds}</Text>
+        <>
+        <Text style={styles.timer}>{minute.length === 1? `0${minute}` : minute}:{second.length === 1? `0${second}` : second}</Text>
 
         <View style={styles.row}>
-            <TouchableOpacity style={styles.button}>
-            <MaterialCommunityIcons name="pause" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+        <TouchableOpacity style={styles.button}
+         onPress={() => {setCounter(0), setSecond('00'), setMinute('00'), setIsActive(false)}}>
+        <MaterialCommunityIcons name="stop" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-        <MaterialCommunityIcons name="play" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+        <TouchableOpacity style={styles.button}
+         onPress={() => {setIsActive(!isActive)}}>
+             {!isActive ?
+                <MaterialCommunityIcons name="play" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+                :
+                <MaterialCommunityIcons name="pause" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
+             }
         </TouchableOpacity>
         </View>
-    </View>
+    </>
     )
 }
 

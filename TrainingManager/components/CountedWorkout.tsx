@@ -7,7 +7,7 @@ import OrangeTheme from "../constants/OrangeTheme";
 
 function CountedWorkout({ reps}: { reps: number}) {
     return (
-        <View >
+        < >
         <Text style={styles.timer}>{reps}</Text>
 
         <View style={styles.row}>
@@ -15,7 +15,7 @@ function CountedWorkout({ reps}: { reps: number}) {
             <MaterialIcons name="done" style={styles.icon} size={70} color={OrangeTheme.colors.text} />
         </TouchableOpacity>
         </View>
-    </View>
+    </>
     )
 }
 
