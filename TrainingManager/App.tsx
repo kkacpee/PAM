@@ -1,31 +1,34 @@
 import 'reflect-metadata';  
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Text } from 'react-native';
 
 import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
-import connectToDatabase from './src/data/Database';
-import { Connection, createConnection } from 'typeorm/browser';
-import { TrainingEntry } from './src/data/models/TrainingEntry';
-import { Exercise } from './src/data/models/Exercise';
-import { ExerciseCategory } from './src/data/models/ExerciseCategory';
-import { ExerciseType } from './src/data/models/ExerciseType';
-import { Training } from './src/data/models/Training';
-import { TrainingPlan } from './src/data/models/TrainingPlan';
-import { TrainingPlanEntry } from './src/data/models/TrainingPlanEntry';
-import { TrainingHistory } from './src/data/models/TrainingHistory';
+import { createConnection } from 'typeorm/browser';
+import { dbConfig } from './src/data/Database';
+import useAsync from 'react-use/lib/useAsync';
+import OrangeTheme from './constants/OrangeTheme';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
 
-  connect().then((x) => connection = x, (x) => console.log(x));
+  var state = useAsync(async () => await createConnection(dbConfig));
 
-  if (!isLoadingComplete) {
+  if (!isLoadingComplete || state.loading) {
     return null;
-  } else {
+  } 
+  else if (state.error != null){
+    return (
+      <SafeAreaProvider>
+        <Text style={{color: OrangeTheme.colors.text}}>
+          {"Critical app error: database connection couldn't be established. \n" + state.error.message}
+        </Text>
+      </SafeAreaProvider>
+    );
+  }
+  else {
     return (
       <SafeAreaProvider>
         <Navigation colorScheme="dark" />
@@ -33,17 +36,4 @@ export default function App() {
       </SafeAreaProvider>
     );
   }
-}
-
-export let connection : Connection;
-
-function connect() {
-  return createConnection({
-    type: 'expo',
-    database: 'TrainingManager',
-    logging: ['error', 'query', 'schema'],
-    driver: require('expo-sqlite'),
-    synchronize: true, //Drops database every deployxc?
-    entities: [TrainingEntry, Exercise, ExerciseCategory, ExerciseType, Training, TrainingPlan, TrainingPlanEntry, TrainingHistory],
-});
 }
