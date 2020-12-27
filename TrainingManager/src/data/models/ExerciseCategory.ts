@@ -13,7 +13,7 @@ export class ExerciseCategory {
     })
     name!: string;
 
-    @OneToMany(() => Exercise, exercise => exercise.category)
-    exercises!: Exercise[];
+    @OneToMany(() => Exercise, exercise => exercise.category) 
+    exercises!: Promise<Exercise[]>;
 
 }

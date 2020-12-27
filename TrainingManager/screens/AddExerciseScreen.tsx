@@ -1,133 +1,140 @@
 import React, { useState } from "react";
-import {
-  Text,
-  SafeAreaView,
-  View
-} from "react-native";
-import {  Picker } from "@react-native-community/picker"
-import { Button, Input } from 'react-native-elements';
+import { Text, SafeAreaView, View, Alert } from "react-native";
+import { Picker } from "@react-native-community/picker";
+import { Button, Input } from "react-native-elements";
 import OrangeTheme from "../constants/OrangeTheme";
-import styles from '../constants/AddScreenStyles'
-import { connection } from '../App';
-import { ExerciseType } from "../src/data/models/ExerciseType";
-import { ExerciseCategory } from "../src/data/models/ExerciseCategory";
-import { Exercise } from "../src/data/models/Exercise";
+import styles from "../constants/AddScreenStyles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { AtlasParamList } from "../types";
+import ExerciseController from "../src/controllers/ExerciseController";
+import useAsync from "react-use/lib/useAsync";
+import { ExerciseViewModel } from "../src/viewmodel/ViewModelTypes";
+import AsyncStateGuard from "../components/AsyncStateGuard";
 
 interface Props {
-  navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">
+  navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">;
 }
 
-export default function AddExerciseScreen({ navigation } : Props) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState("Reps");
-  const [category, setCategory] = useState("Klata");
+export default function AddExerciseScreen({ navigation }: Props) {
+  const controller = new ExerciseController();
 
-    return (
+  const [types, setTypes] = useState<string[]>();
+  const [categories, setCategories] = useState<string[]>();
+  const [model, setModel] = useState({
+    name: "",
+    description: "",
+    type: "",
+    category: "",
+  } as ExerciseViewModel);
+
+  const state = useAsync(async () => {
+    var model = await controller.createDefault();
+    var types = await controller.getTypes();
+    var categories = await controller.getCategories();
+    console.log(types);
+    setTypes(types);
+    setCategories(categories);
+    setModel(model);
+  });
+
+  let updateModel = (m : ExerciseViewModel, fieldName : string, value : any) => {
+    var copy = Object.assign({}, m); // Copying because dont want to play around with reducers. this will be changed
+    copy[fieldName] = value;
+    console.log(fieldName + "  " + copy[fieldName] + "  " + value)
+    setModel(copy);
+  }
+
+  let typePickerItems = types?.map((s, i) => {
+    return <Picker.Item key={i} value={s} label={s} />;
+  });
+
+  let categoryPickerItems = categories?.map((s, i) => {
+    return <Picker.Item key={i} value={s} label={s} />;
+  });
+
+  return (
+    <AsyncStateGuard asyncState={state}>
       <SafeAreaView style={styles.container}>
         <Input
           label="Name"
           labelStyle={styles.inputLabel}
-          value={name}
-          onChangeText={(itemValue) => setName(itemValue)}
+          value={model.name}
+          onChangeText={(itemValue) => 
+            updateModel(model, "name", itemValue)}
           inputStyle={styles.input}
-          inputContainerStyle={{borderColor: OrangeTheme.colors.border}}
+          inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}
         />
         <Input
           label="Description"
           labelStyle={styles.inputLabel}
-          value={description}
-          onChangeText={(itemValue) => setDescription(itemValue)}
+          value={model.description}
+          onChangeText={(itemValue) => 
+            updateModel(model, "description", itemValue)}
           inputStyle={styles.input}
-          inputContainerStyle={{borderColor: OrangeTheme.colors.border}}
-          multiline = {true}
-          numberOfLines = {4}
+          inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}
+          multiline={true}
+          numberOfLines={2}
         />
         <Text style={styles.pickerLabel}>Type</Text>
         <View style={styles.pickerContainer}>
-        <Picker
-        selectedValue={type}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setType(itemValue.toString())}
-        itemStyle={styles.item}
-        >
-          <Picker.Item label="Reps" value="reps" />
-          <Picker.Item label="Time" value="time" />
-        </Picker>
+          <Picker
+            selectedValue={model.type}
+            style={styles.picker}
+            onValueChange={(itemValue) =>
+              updateModel(model, "type", itemValue)
+            }
+            itemStyle={styles.item}
+          >
+            {typePickerItems}
+          </Picker>
         </View>
         <Text style={styles.pickerLabel}>Category</Text>
         <View style={styles.pickerContainer}>
-        <Picker
-        selectedValue={category}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setCategory(itemValue.toString())}
-        itemStyle={styles.item}
-        >
-          <Picker.Item label="Chest" value="Chest" />
-          <Picker.Item label="Back" value="Back" />
-        </Picker>
+          <Picker
+            selectedValue={model.category}
+            style={styles.picker}
+            onValueChange={(itemValue) =>
+              updateModel(model, "category", itemValue)
+            }
+            itemStyle={styles.item}
+          >
+            {categoryPickerItems}
+          </Picker>
         </View>
-        <View style={{marginTop: 50}}>
-        <Button
-          title="Add"
-          type="outline"
-          titleStyle={{color: OrangeTheme.colors.text}}
-          buttonStyle={{borderWidth: 1, borderColor: OrangeTheme.colors.border, borderRadius: 4}}
-          onPress={() => addAndNavigateBack(name, description, type, category, navigation)}
-        /> 
+        <View style={{ marginTop: 50 }}>
+          <Button
+            title="Add"
+            type="outline"
+            titleStyle={{ color: OrangeTheme.colors.text }}
+            buttonStyle={{
+              borderWidth: 1,
+              borderColor: OrangeTheme.colors.border,
+              borderRadius: 4,
+            }}
+            onPress={() =>
+              addAndNavigateBack(controller, model, navigation)
+            }
+          />
         </View>
-        <Text style={{display: "none"}}>Baza świruje coś.</Text>
       </SafeAreaView>
+    </AsyncStateGuard>
+  );
+}
+
+function addAndNavigateBack(
+  controller : ExerciseController,
+  p_model : ExerciseViewModel,
+  navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">
+) {
+  controller
+    .AddExercise(p_model)
+    .then(
+      () => navigation.navigate("ExercisesScreen"),
+      () =>
+        Alert.alert("Error", "Unable to save exercise.", [
+          {
+            text: "OK",
+          },
+        ])
     );
-  }
-
-  function addAndNavigateBack(
-    p_name : string, 
-    p_desc : string, 
-    p_type : string, 
-    p_category : string,
-    navigation : StackNavigationProp<AtlasParamList, "AtlasScreen">) {
-
-      addToDB(p_name, p_desc, p_type, p_category)
-        .then(() => navigation.navigate("ExercisesScreen"), x => console.log(x));
-  }
-
-  async function addToDB(
-    p_name : string, 
-    p_desc : string, 
-    p_type : string, 
-    p_category : string) {
-
-      var typeRepository = connection.getRepository(ExerciseType);
-      var categoryRepository = connection.getRepository(ExerciseCategory);
-      var exerciseRepository = connection.getRepository(Exercise);
-      console.log("MOMY REPOZYTORIA");
-
-      //OPERATION SHOULD BE WRAPPED IN TRANSACTION
-      var type = await typeRepository.findOne({ name : p_name});
-
-      if (!type){
-        type = typeRepository.create();
-        type.name = p_name;
-        type = await typeRepository.save(type);
-      }
-
-      var category = await categoryRepository.findOne({ name: p_category});
-
-      if (!category){
-        category = categoryRepository.create();
-        category.name = p_category;
-        category = await categoryRepository.save(category);
-      }
-
-      var exercise = await exerciseRepository.create();
-      exercise.name = p_name;
-      exercise.description = p_desc;
-      exercise.category = category;
-      exercise.type = type;
-      exercise.isActive = true;
-      console.log(exercise);
-      exerciseRepository.save(exercise);
-  }
+}

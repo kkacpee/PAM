@@ -31,7 +31,7 @@ export class Exercise {
     isActive!: boolean;
 
 
-    @ManyToOne(() => ExerciseType, type => type.exercises, { eager: true})
+    @ManyToOne(() => ExerciseType, type => type.exercises, { eager: true} )
     @JoinColumn({ name: "idExerciseType", referencedColumnName: "id" })
     type!: ExerciseType;
 
