@@ -9,3 +9,11 @@ export type ExerciseViewModel = {
     category : string;
     type : string;
 }
+
+export type CalendarEntryViewModel = {
+    date : Date,
+    title : string,
+    state: CalendarEntryState
+}
+
+export type CalendarEntryState = "finished" | "missed" | "notStarted";

@@ -22,9 +22,9 @@ export class TrainingHistory {
 
     @ManyToOne(() => Training, training => training.history)
     @JoinColumn({ name: "idTraining"})
-    training!: Training;
+    training!: Promise<Training>;
 
     @ManyToOne(() => TrainingPlan, plan => plan.history)
     @JoinColumn({ name: "idTrainingPlan"})
-    trainingPlan!: TrainingPlan;
+    trainingPlan!: Promise<TrainingPlan>;
 }
