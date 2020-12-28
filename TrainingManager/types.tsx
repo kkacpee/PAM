@@ -16,6 +16,7 @@ export type HomeParamList = {
 
 export type CalendarParamList = {
   CalendarScreen: undefined;
+  AddTrainingPlanScreen: undefined;
 };
 
 export type ExercisesParamList = {
