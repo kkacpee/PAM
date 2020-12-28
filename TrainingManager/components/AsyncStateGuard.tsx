@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import { ActivityIndicator, Text, StyleSheet } from "react-native";
 import { AsyncState } from "react-use/lib/useAsync";
 import OrangeTheme from "../constants/OrangeTheme";
 
@@ -11,7 +11,10 @@ interface Props {
 export default function AsyncStateGuard({ children, asyncState }: Props) {
   if (asyncState.loading) {
     return (
-      <Text style={{ color: OrangeTheme.colors.text }}>{"Loading..."}</Text>
+      <ActivityIndicator 
+        size="large"
+        color={OrangeTheme.colors.text}
+        style={styles.spinner}/>
     );
   } else if (asyncState.error != null) {
     console.log(asyncState.error);
@@ -27,3 +30,9 @@ export default function AsyncStateGuard({ children, asyncState }: Props) {
     return children;
   }
 }
+
+const styles = StyleSheet.create({
+  spinner: {
+    flex: 1
+  }
+});
