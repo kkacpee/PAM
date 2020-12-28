@@ -11,13 +11,37 @@ export interface Props {
 
 export interface Exercise {
     id: number,
-    name: string
+    name: string,
+    type: number
 }
 
+const items:Exercise[] = [{
+    id: 1,
+    name: 'Dupa1',
+    type: 1
+},{
+    id: 2,
+    name: 'Dupa2',
+    type: 2
+},{
+    id: 3,
+    name: 'Dupa3',
+    type: 1
+},{
+    id: 4,
+    name: 'Dupa4',
+    type: 2
+},{
+    id: 5,
+    name: 'Dupa5',
+    type: 1
+}]
 const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
   const [visible, setVisible] = useState(false);
   const [exerciseId, setExerciseId] = useState(0);
-  const [exercises, setExercises] = useState<Exercise[]>();
+  const [exercises, setExercises] = useState<Exercise[]>(items);
+  const [reps, setReps] = useState(0);
+  const [time, setTime] = useState(0);
   const toggleOverlay = () => {
     setVisible(!visible);
   };
@@ -45,6 +69,29 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
             {exercisePickerItems}
           </Picker>
         </View>
+        {(exercises?.find(x => x.id == exerciseId)?.type == 1) ?
+        <View>
+            <Input 
+             label="Reps"
+             labelStyle={styles.inputLabel}
+             value={reps.toString()}
+             onChangeText={(value) => setReps(Number(value))}
+             inputStyle={styles.input}
+             inputContainerStyle={{ borderColor: styles.input.color }}
+            />
+        </View>    
+        :
+        <View>
+            <Input 
+             label="Time"
+             labelStyle={styles.inputLabel}
+             value={time.toString()}
+             onChangeText={(value) => setTime(Number(value))}
+             inputStyle={styles.input}
+             inputContainerStyle={{ borderColor: styles.input.color }}
+            />
+        </View>   
+    }
         <Button title="Ok" onPress={() => {}} 
         buttonStyle={styles.modalOkButton}
         titleStyle={{color: styles.name.color}}

@@ -67,7 +67,15 @@ const styles = StyleSheet.create({
         color: OrangeTheme.colors.text, 
         alignSelf:'center', 
         fontWeight: "bold"
-    }
+    },
+    input: {
+        color: OrangeTheme.colors.text,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)'
+      },
+      inputLabel: {
+          color: OrangeTheme.colors.text,
+          alignSelf: 'center'
+      }
 });
 
 export default styles;

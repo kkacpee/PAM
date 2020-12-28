@@ -89,6 +89,27 @@ const styles = StyleSheet.create({
         color: OrangeTheme.colors.text, 
         alignSelf:'center', 
         fontWeight: "bold"
+    },
+    checkBoxContainer: {
+      borderWidth: 1, 
+      borderColor: OrangeTheme.colors.border, 
+      borderRadius: 4, 
+      marginBottom:5,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)'
+    },
+    thumb: {
+      height: 20, 
+      width: 20,
+      backgroundColor: OrangeTheme.colors.text
+    },
+    track:{ 
+      color: OrangeTheme.colors.text,
+      backgroundColor: 'transparent' 
+    },
+    sliderContainer: {
+      flex: 1, 
+      alignItems: 'stretch', 
+      justifyContent: 'center'
     }
   });
 
