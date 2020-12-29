@@ -34,7 +34,7 @@ export default function CalendarScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Calendar theme={calendarTheme} markedDates={markedDates} />
+      <Calendar theme={calendarTheme} markedDates={markedDates}/>
       <AsyncStateGuard asyncState={trainingsState}>
         <FlatList
           data={trainingsState.value?.entries}
@@ -58,7 +58,7 @@ export default function CalendarScreen({ navigation }: Props) {
       </AsyncStateGuard>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("AddTrainingPlanScreen")}
+        onPress={() => {navigation.navigate("AddTrainingPlanScreen")}}
       >
         <Text style={{ fontSize: 60, textAlignVertical: "center" }}>+</Text>
       </TouchableOpacity>
@@ -88,7 +88,7 @@ function mapEntryStateToColor(state: CalendarEntryState) {
     case "missed":
       return "red";
     case "notStarted":
-      return "white";
+      return "blue";
     default:
       throw new Error("Unrecognized calendar entry state.");
   }

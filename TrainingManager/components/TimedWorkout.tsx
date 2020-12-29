@@ -5,6 +5,7 @@ import { View } from "react-native";
 import { StyleSheet, TouchableOpacity, Text} from 'react-native';
 import OrangeTheme from "../constants/OrangeTheme";
 import { useEffect } from "react";
+import { Audio } from 'expo-av';
 
 export const delay = (ms:any) => new Promise((res) => setTimeout(res, ms));
 
@@ -13,7 +14,8 @@ function TimedWorkout({ minutes, seconds}: { minutes: number, seconds: number })
     const [minute, setMinute] = useState(`${minutes}`);
     const [isActive, setIsActive] = useState(false);
     const [counter, setCounter] = useState(minutes * 60 + seconds);
-
+    const [sound, setSound] = React.useState();
+    const [soundPlayed, setSoundPlayed] = useState(false);
     useEffect(() => {
         let intervalId;
     
@@ -33,6 +35,10 @@ function TimedWorkout({ minutes, seconds}: { minutes: number, seconds: number })
     
             if(counter === 0){
                 setIsActive(false);
+                if(!soundPlayed){
+                  playSound();
+                  setSoundPlayed(true);
+                }
             }
             else {
                 setCounter(counter => counter - 1);
@@ -40,8 +46,27 @@ function TimedWorkout({ minutes, seconds}: { minutes: number, seconds: number })
           }, 1000)
         }
     
-        return () => clearInterval(intervalId);
-      }, [isActive, counter])
+        return () => {clearInterval(intervalId), unloadSound};
+      }, [isActive, counter, sound])
+
+      async function playSound() {
+        console.log('Loading Sound');
+        const { sound } = await Audio.Sound.createAsync(
+           require('../assets/sounds/default.mp3')
+        );
+        setSound(sound);
+    
+        console.log('Playing Sound');
+        await sound.playAsync(); 
+      }
+    
+      const unloadSound = () => {
+        return sound
+          ? () => {
+              console.log('Unloading Sound');
+              sound.unloadAsync(); }
+          : undefined;
+      };
 
     return (
         <>

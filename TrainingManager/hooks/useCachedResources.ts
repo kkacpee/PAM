@@ -16,6 +16,14 @@ export default function useCachedResources() {
         await Font.loadAsync({
           ...Ionicons.font,
           'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+          'AddBg': require('../assets/images/AddBg.png'),
+          'Exercise': require('../assets/images/Exercise.png'),
+          'ExerciseBg': require('../assets/images/ExerciseBg.png'),
+          'HomeBg': require('../assets/images/HomeBg.png'),
+          'Training': require('../assets/images/Training.png'),
+          'TrainingBg': require('../assets/images/TrainingsBg.png'),
+          'WorkoutBg': require('../assets/images/WorkoutBg.png'),
+          'DefaultSound': require('../assets/sounds/default.mp3')
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service

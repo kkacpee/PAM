@@ -25,7 +25,7 @@ export default function AtlasScreen({ navigation } : Props) {
         <View style={styles.container}>
             <ImageBackground
             style={styles.image}
-            source={require('../assets/images/Excersise.png')}
+            source={require('../assets/images/Exercise.png')}
             > 
             <TouchableOpacity onPress={() => navigation.navigate("ExercisesScreen")} style={styles.imageOverlay}>
                 <Text style={styles.text}>Exercises</Text>    

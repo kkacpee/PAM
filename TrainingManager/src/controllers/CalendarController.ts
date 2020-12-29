@@ -5,6 +5,7 @@ import {
   CalendarViewModel,
 } from "../viewmodel/ViewModelTypes";
 import BaseController from "./BaseController";
+import * as Notifications from 'expo-notifications';
 
 export default class CalendarController extends BaseController {
   constructor() {
@@ -16,23 +17,33 @@ export default class CalendarController extends BaseController {
    */
   public async GetDummyTrainings(): Promise<CalendarViewModel> {
     await new Promise((resolve) => setTimeout(resolve, 500));
-
+    this.scheduleNotification('2020-12-29');
     return {
       entries: [
         {
-          date: new Date(2020, 12, 28),
+          date: new Date('2020-12-02'),
           title: "Trening A",
           state: "finished",
         },
         {
-          date: new Date(2020, 12, 29),
+          date: new Date('2020-12-30'),
           title: "Trening B",
           state: "notStarted",
         },
         {
-          date: new Date(2020, 12, 30),
+          date: new Date('2020-12-16'),
           title: "Trening C",
-          state: "missed",
+          state: "finished",
+        },
+        {
+          date: new Date('2020-12-17'),
+          title: "Trening D",
+          state: "finished",
+        },
+        {
+          date: new Date('2020-12-18'),
+          title: "Trening DUpa",
+          state: "finished",
         },
       ],
     };
@@ -72,5 +83,17 @@ export default class CalendarController extends BaseController {
     } else {
       return "notStarted";
     }
+  }
+
+  private async scheduleNotification(date:string){
+    // const getData = async () => {const response = await Notifications.getAllScheduledNotificationsAsync(); return response}
+    // console.log(await getData())
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'TIME TO WORKOUT',
+          body: 'You have training today'
+        },
+        trigger: { date:new Date(`${date}T08:00:00Z`)}
+      });
   }
 }
