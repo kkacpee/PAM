@@ -13,18 +13,19 @@ import styles from "../constants/AddScreenStyles";
 import { TabBar, TabView } from "react-native-tab-view";
 import { FlatList } from "react-native-gesture-handler";
 import AddExerciseToTrainingModal from "../components/Modals/AddExerciseToTrainingModal";
-import { ExerciseEntryViewModel } from "../src/viewmodel/ViewModelTypes";
+import { AddTrainingViewModel, ExerciseEntryViewModel } from "../src/viewmodel/ViewModelTypes";
 import TrainingController from "../src/controllers/TrainingController";
 import { Exercise } from "../src/data/models/Exercise";
 import useAsyncFn from "react-use/lib/useAsyncFn";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { AtlasParamList } from "../types";
+import AsyncStateGuard from "../components/AsyncStateGuard";
 
 interface Props {
   navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">;
 }
 
-export default function AddTrainingScreen({navigation} : Props) {
+export default function AddTrainingScreen({ navigation }: Props) {
   var controller = new TrainingController();
 
   // MODEL
@@ -60,16 +61,17 @@ export default function AddTrainingScreen({navigation} : Props) {
     setEntries([...entries, entry]);
   };
 
-  const [] = useAsyncFn(async () => {
-    var model = {
-      name: name,
-      description: description,
-      iconName: selectedIcon,
-      exerciseEntries: entries
-    }
+  const model = {
+    name: name,
+    description: description,
+    iconName: selectedIcon,
+    exerciseEntries: entries,
+  };
+
+  const [state, addTrainingAsync] = useAsyncFn(async (model : AddTrainingViewModel) => {
     await controller.AddTrainingAsync(model);
     navigation.navigate("TrainingsScreen");
-  })
+  });
 
   const infoRoute = () => {
     return (
@@ -78,7 +80,11 @@ export default function AddTrainingScreen({navigation} : Props) {
           label="Name"
           labelStyle={styles.inputLabel}
           value={name}
-          onChangeText={(itemValue) => setName(itemValue)}
+          onChangeText={(itemValue) => {
+            setName(itemValue);
+            console.log("ITEMVALUE: " + itemValue);
+            console.log("NAME:" + name);
+          }}
           inputStyle={styles.input}
           inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}
         />
@@ -97,9 +103,7 @@ export default function AddTrainingScreen({navigation} : Props) {
           <Picker
             selectedValue={selectedIcon}
             style={styles.picker}
-            onValueChange={(itemValue) =>
-              setSelectedIcon(itemValue.toString())
-            }
+            onValueChange={(itemValue) => setSelectedIcon(itemValue.toString())}
             itemStyle={styles.item}
           >
             <Picker.Item label="Weightlifting" value="weight-pound" />
@@ -147,26 +151,29 @@ export default function AddTrainingScreen({navigation} : Props) {
   };
 
   return (
-    <ImageBackground
-      source={require("../assets/images/AddBg.png")}
-      style={styles.image}
-    >
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        style={{ borderColor: OrangeTheme.colors.text, borderBottomWidth: 1 }}
-        renderTabBar={renderTabBar}
-      />
-      <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
-        <Button
-          title="Add"
-          type="outline"
-          titleStyle={{ color: OrangeTheme.colors.text }}
-          buttonStyle={styles.addButton}
+    <AsyncStateGuard state={state}>
+      <ImageBackground
+        source={require("../assets/images/AddBg.png")}
+        style={styles.image}
+      >
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          style={{ borderColor: OrangeTheme.colors.text, borderBottomWidth: 1 }}
+          renderTabBar={renderTabBar}
         />
-      </View>
-    </ImageBackground>
+        <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
+          <Button
+            title="Add"
+            type="outline"
+            titleStyle={{ color: OrangeTheme.colors.text }}
+            buttonStyle={styles.addButton}
+            onPress={() => addTrainingAsync(model)}
+          />
+        </View>
+      </ImageBackground>
+    </AsyncStateGuard>
   );
 }
 
@@ -217,7 +224,7 @@ const renderExerciseItem = (
           marginRight: 5,
         }}
       >
-        {itemInfo.item.executionTime == null
+        {itemInfo.item.executionTime === 0
           ? itemInfo.item.setCount + "x" + itemInfo.item.repCount
           : itemInfo.item.executionTime + " s"}
       </Text>

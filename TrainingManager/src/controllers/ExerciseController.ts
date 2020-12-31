@@ -104,6 +104,7 @@ export default class ExerciseController extends BaseController {
     }
 
     return {
+      id: -1,
       name: "",
       description: "",
       category: cat.name,

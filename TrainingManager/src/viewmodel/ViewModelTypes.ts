@@ -4,7 +4,7 @@ export type CategoryViewModel = {
 };
 
 export type ExerciseViewModel = {
-  id: number,
+  id: number;
   name: string;
   description: string;
   category: string;
@@ -48,4 +48,18 @@ export type ExerciseEntryViewModel = {
   repCount: number | undefined;
   setCount: number | undefined;
   executionTime: number | undefined;
+};
+
+export type AddTrainingPlanViewModel = {
+  name: string;
+  notification: boolean;
+  dateFrom: Date;
+  dateTo: Date;
+  entries: TrainingEntryViewModel[];
+};
+
+export type TrainingEntryViewModel = {
+  dayOfWeek: number;
+  idTraining: number;
+  name: string;
 };

@@ -23,9 +23,17 @@ export class TrainingPlan {
     @Column("boolean")
     alarm!: boolean;
 
+    @Column("datetime")
+    dateFrom!: Date;
+
+    @Column("datetime")
+    dateTo!: Date;
+
     @OneToMany(() => TrainingHistory, history => history.trainingPlan)
     history!: TrainingHistory[];
 
-    @OneToMany(() => TrainingPlanEntry, entry => entry.trainingPlan)
-    entries!: Promise<TrainingPlanEntry[]>;
+    @OneToMany(() => TrainingPlanEntry, entry => entry.trainingPlan, {
+        eager: true
+    })
+    entries!: TrainingPlanEntry[];
 }

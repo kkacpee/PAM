@@ -28,7 +28,7 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
 
   const state = useAsync(() => controller.GetAllExercisesAsync());
   const exercises = state.value;
-  const currentType = exercises?.find((x) => x.id == exerciseId)?.type.id;
+  const currentType = exercises?.find((x) => x.id === exerciseId)?.type.id;
 
   let exercisePickerItems = exercises?.map((s, i) => {
     return <Picker.Item key={i} value={s.id} label={s.name} />;
@@ -113,8 +113,8 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
             <Button
               title="Ok"
               onPress={() => {
-                props.fnc(getCurrentExercise(), reps, sets, time),
-                setVisible(false);
+                props.fnc(getCurrentExercise(), reps, sets, time);
+                toggleOverlay();
               }}
               buttonStyle={styles.modalOkButton}
               titleStyle={{ color: styles.name.color }}
