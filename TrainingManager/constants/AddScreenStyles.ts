@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     picker: {
-      height: 50, 
       flex: 1,
       color: OrangeTheme.colors.text,
       borderWidth: 2,
