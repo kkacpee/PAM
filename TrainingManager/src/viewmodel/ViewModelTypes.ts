@@ -4,6 +4,7 @@ export type CategoryViewModel = {
 };
 
 export type ExerciseViewModel = {
+  id: number,
   name: string;
   description: string;
   category: string;

@@ -26,11 +26,15 @@ export class TrainingEntry {
     @Column("int")
     order!: number;
 
-    @ManyToOne(() => Exercise, exercise => exercise.entries)
+    @ManyToOne(() => Exercise, exercise => exercise.entries, {
+        eager: true
+    })
     @JoinTable({ name: "idExercise" })
     exercise!: Exercise;
 
-    @ManyToOne(() => Training, training => training.exercises)
+    @ManyToOne(() => Training, training => training.exercises, {
+        eager: true
+    })
     @JoinTable({ name: "idTraining" })
     training!: Training;
 

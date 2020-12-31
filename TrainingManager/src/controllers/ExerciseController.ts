@@ -7,6 +7,7 @@ import {
 import BaseController from "./BaseController";
 import { Exercise } from "../data/models/Exercise";
 import { ExerciseType } from "../data/models/ExerciseType";
+import { TrainingEntry } from "../data/models/TrainingEntry";
 
 export default class ExerciseController extends BaseController {
   constructor() {
@@ -16,8 +17,6 @@ export default class ExerciseController extends BaseController {
   public async GetAllExercisesCategorised(): Promise<CategoryViewModel[]> {
     var categoryRepository = this.connection.getRepository(ExerciseCategory);
     var categories = await categoryRepository.find();
-
-    console.log(categories);
 
     var result = new Array<CategoryViewModel>();
     for (var category of categories) {
@@ -33,6 +32,7 @@ export default class ExerciseController extends BaseController {
           .select(
             (e) =>
               <ExerciseViewModel>{
+                id: e.id,
                 name: e.name,
                 category: category.name,
                 description: e.description,
@@ -75,6 +75,15 @@ export default class ExerciseController extends BaseController {
     exerecise.isActive = true;
 
     repo.save(exerecise);
+  }
+
+  public async deleteExerciseAsync(id: number) {
+    var shouldDeleteSoft = await this.isExerciseOnAnyTraining(id);
+    if (shouldDeleteSoft) {
+      await this.deleteExerciseSoftAsync(id);
+    } else {
+      await this.deleteExerciseHardAsync(id);
+    }
   }
 
   public async createDefault(): Promise<ExerciseViewModel> {
@@ -126,5 +135,27 @@ export default class ExerciseController extends BaseController {
     var cat = catRepo.create();
     cat.name = name;
     catRepo.save(cat);
+  }
+
+  private async isExerciseOnAnyTraining(id: number): Promise<boolean> {
+    var repo = this.connection.getRepository(TrainingEntry);
+    var entriesCount = await repo.count({ idExercise: id });
+    return entriesCount !== 0;
+  }
+
+  private async deleteExerciseHardAsync(id: number): Promise<void> {
+    var repo = this.connection.getRepository(Exercise);
+    var exercise = await repo.find({ id: id });
+    repo.remove(exercise);
+  }
+
+  private async deleteExerciseSoftAsync(id: number): Promise<void> {
+    var repo = this.connection.getRepository(Exercise);
+    var exercise = await repo.findOne({ id: id });
+
+    if (exercise) {
+      exercise.isActive = false;
+      repo.save(exercise);
+    }
   }
 }

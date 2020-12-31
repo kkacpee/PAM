@@ -16,6 +16,7 @@ import useAsync from "react-use/lib/useAsync";
 import ExerciseController from "../src/controllers/ExerciseController";
 import { useIsFocused } from "@react-navigation/native";
 import AsyncStateGuard from "../components/AsyncStateGuard";
+import useAsyncFn from "react-use/lib/useAsyncFn";
 
 interface Props {
   navigation: StackNavigationProp<ExercisesParamList, "ExercisesScreen">;
@@ -23,12 +24,17 @@ interface Props {
 
 export default function ExercisesScreen({ navigation }: Props) {
   let controller = new ExerciseController();
+
+  const [deletionState, deleteAsync] = useAsyncFn((id: number) =>
+    controller.deleteExerciseAsync(id)
+  );
   const state = useAsync(() => controller.GetAllExercisesCategorised(), [
     useIsFocused(),
+    deletionState.loading,
   ]);
 
   return (
-    <AsyncStateGuard state={state}>
+    <AsyncStateGuard state={[state]}>
       <SafeAreaView style={styles.container}>
         <ImageBackground
           source={require("../assets/images/ExerciseBg.png")}
@@ -36,8 +42,10 @@ export default function ExercisesScreen({ navigation }: Props) {
         >
           <SectionList
             sections={state.value!}
-            keyExtractor={item => item.name}
-            renderItem={({ item }) => <Item title={item.name} />}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <Item title={item.name} id={item.id} deleteFn={deleteAsync} />
+            )}
             renderSectionHeader={({ section: { name } }) => (
               <Text style={styles.header}>{name}</Text>
             )}
