@@ -41,7 +41,7 @@ export default function AddTrainingScreen({navigation} : Props) {
   ]);
 
   const removeEntryFn = (id: number) => {
-    setEntries(entries.filter((value) => value.idExercise === id));
+    setEntries(entries.filter((value) => value.idExercise !== id));
   };
 
   const addEntryFn = (
@@ -228,7 +228,7 @@ const renderExerciseItem = (
           width: 30,
           height: 30,
         }}
-        onPress={() => removeEntry(itemInfo.item.idExercise)}
+        onPress={() => {removeEntry(itemInfo.item.idExercise), console.log(itemInfo)}}
         titleStyle={{
           color: OrangeTheme.colors.background,
         }}

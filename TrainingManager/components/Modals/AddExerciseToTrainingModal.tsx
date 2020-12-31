@@ -70,7 +70,7 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={
-                  exercises?.find((x) => x.id === exerciseId)?.name
+                  exercises?.find((x) => x.id === exerciseId)?.id
                 }
                 style={styles.picker}
                 onValueChange={(itemValue) => setExerciseId(Number(itemValue))}
@@ -113,7 +113,8 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
             <Button
               title="Ok"
               onPress={() => {
-                props.fnc(getCurrentExercise(), reps, sets, time);
+                props.fnc(getCurrentExercise(), reps, sets, time),
+                setVisible(false);
               }}
               buttonStyle={styles.modalOkButton}
               titleStyle={{ color: styles.name.color }}

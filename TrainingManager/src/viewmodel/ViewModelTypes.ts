@@ -27,6 +27,14 @@ export type HomeViewModel = {
   todaysTrainingId: number | undefined;
 };
 
+export type OngoingTrainingViewModel = {
+  name: string,
+  repCount: number,
+  setCount: number,
+  time: number,
+  isTimed: boolean
+}[]
+
 export type AddTrainingViewModel = {
   name: string;
   description: string;
