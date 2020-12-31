@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { Text, SafeAreaView, View, Alert, ImageBackground } from "react-native";
+import { Text, SafeAreaView, View, ImageBackground } from "react-native";
 import { Picker } from "@react-native-community/picker";
-import { Button, CheckBox, Input, Slider } from "react-native-elements";
+import { Button, CheckBox, Slider } from "react-native-elements";
 import OrangeTheme from "../constants/OrangeTheme";
 import styles from "../constants/AddScreenStyles";
-import { ExerciseViewModel } from "../src/viewmodel/ViewModelTypes";
 import { ScrollView } from "react-native-gesture-handler";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
 
 export interface Training{
     id: number,
@@ -29,7 +27,7 @@ const items:Training[] = [{
 }]
 
 export default function AddTrainingPlanScreen() {
-    const [trainings, setTrainings] = useState(items);
+    const [trainings] = useState(items);
     const [selectedTraining, setSelectedTraining] = useState<Training | undefined>();
     const [selectedLength, setSelectedLength] = useState(1);
     const [intensity, setIntensity] = useState(1);

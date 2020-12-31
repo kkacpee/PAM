@@ -11,6 +11,7 @@ import useAsync from "react-use/lib/useAsync";
 import { ExerciseViewModel } from "../src/viewmodel/ViewModelTypes";
 import AsyncStateGuard from "../components/AsyncStateGuard";
 import AddMiscModal from "../components/Modals/AddMiscModal";
+import useAsyncFn from "react-use/lib/useAsyncFn";
 
 interface Props {
   navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">;
@@ -28,7 +29,7 @@ export default function AddExerciseScreen({ navigation }: Props) {
     category: "",
   } as ExerciseViewModel);
 
-  const state = useAsync(async () => {
+  const modelState = useAsync(async () => {
     var model = await controller.createDefault();
     var types = await controller.getTypes();
     var categories = await controller.getCategories();
@@ -38,23 +39,28 @@ export default function AddExerciseScreen({ navigation }: Props) {
     setModel(model);
   });
 
-  let updateModel = (m : ExerciseViewModel, fieldName : string, value : any) => {
+  const [categoryState, addCategory] = useAsyncFn(async (name : string) => {
+    await controller.addCategory(name);
+    var categories = await controller.getCategories();
+    setCategories(categories);
+  });
+
+  const updateModel = (m : ExerciseViewModel, fieldName : string, value : any) => {
     var copy = Object.assign({}, m); // Copying because dont want to play around with reducers. this will be changed
     copy[fieldName] = value;
-    console.log(fieldName + "  " + copy[fieldName] + "  " + value)
     setModel(copy);
   }
 
-  let typePickerItems = types?.map((s, i) => {
+  const typePickerItems = types?.map((s, i) => {
     return <Picker.Item key={i} value={s} label={s} />;
   });
 
-  let categoryPickerItems = categories?.map((s, i) => {
+  const categoryPickerItems = categories?.map((s, i) => {
     return <Picker.Item key={i} value={s} label={s} />;
   });
 
   return (
-    <AsyncStateGuard asyncState={state}>
+    <AsyncStateGuard state={[modelState, categoryState]}>
       <ImageBackground source={require('../assets/images/AddBg.png')} style={styles.image}>
       <SafeAreaView style={styles.container}>
           <Input
@@ -89,7 +95,6 @@ export default function AddExerciseScreen({ navigation }: Props) {
             >
               {typePickerItems}
             </Picker>
-            <AddMiscModal title="Type" fnc={() => {}}/>
           </View>
           <Text style={styles.pickerLabel}>Category</Text>
           <View style={styles.pickerContainer}>
@@ -103,7 +108,7 @@ export default function AddExerciseScreen({ navigation }: Props) {
             >
               {categoryPickerItems}
             </Picker>
-            <AddMiscModal title="Category" fnc={() => {}}/>
+            <AddMiscModal title="Category" fnc={(name) => addCategory(name)}/>
           </View>
           <View style={{ marginTop: 50 }}>
             <Button

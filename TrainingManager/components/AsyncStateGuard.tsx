@@ -5,25 +5,31 @@ import OrangeTheme from "../constants/OrangeTheme";
 
 interface Props {
   children: JSX.Element;
-  asyncState: AsyncState<any>;
+  state: AsyncState<any> | Array<AsyncState<any>>;
 }
 
-export default function AsyncStateGuard({ children, asyncState }: Props) {
-  if (asyncState.loading) {
+export default function AsyncStateGuard({ children, state }: Props) {
+  const states = state instanceof Array ? state : [state];
+  const isLoading = states.find((value) => value.loading) != null;
+  const erronousStates = states.filter((value) => value.error != null);
+  let errorMsg = erronousStates.reduce(
+    (prev, cur) => (prev = prev + cur.error?.message + "\n"),
+    ""
+  );
+
+  if (isLoading) {
     return (
-      <ActivityIndicator 
+      <ActivityIndicator
         size="large"
         color={OrangeTheme.colors.text}
-        style={styles.spinner}/>
+        style={styles.spinner}
+      />
     );
-  } else if (asyncState.error != null) {
-    console.log(asyncState.error);
+  } else if (errorMsg.length != 0) {
+    console.log(errorMsg);
     return (
       <Text style={{ color: OrangeTheme.colors.text }}>
-        {"Error: " +
-          asyncState.error.message +
-          "\n StackTrace: \n" +
-          asyncState.error.stack}
+        {"Error: \n" + errorMsg}
       </Text>
     );
   } else {
@@ -33,6 +39,6 @@ export default function AsyncStateGuard({ children, asyncState }: Props) {
 
 const styles = StyleSheet.create({
   spinner: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });

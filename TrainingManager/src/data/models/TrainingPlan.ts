@@ -27,5 +27,5 @@ export class TrainingPlan {
     history!: TrainingHistory[];
 
     @OneToMany(() => TrainingPlanEntry, entry => entry.trainingPlan)
-    entries!: TrainingPlanEntry[];
+    entries!: Promise<TrainingPlanEntry[]>;
 }

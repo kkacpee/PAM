@@ -17,8 +17,15 @@ export default class ExerciseController extends BaseController {
     var categoryRepository = this.connection.getRepository(ExerciseCategory);
     var categories = await categoryRepository.find();
 
+    console.log(categories);
+
     var result = new Array<CategoryViewModel>();
     for (var category of categories) {
+      //When category is freshly added, it doesn't have a key and all shit breaks loose
+      if (!category.id) {
+        continue;
+      }
+
       var exercises = await category.exercises;
       result.push(<CategoryViewModel>{
         name: category.name,
@@ -102,13 +109,9 @@ export default class ExerciseController extends BaseController {
   }
 
   public addType(name: string) {
-          console.log(this.connection);
     var typeRepo = this.connection.getRepository(ExerciseType);
-          console.log(typeRepo);
     var type = typeRepo.create();
-          console.log(type);
     type.name = name;
-          console.log(type);
     typeRepo.save(type);
   }
 
@@ -119,13 +122,9 @@ export default class ExerciseController extends BaseController {
   }
 
   public addCategory(name: string) {
-    console.log(this.connection);
     var catRepo = this.connection.getRepository(ExerciseCategory);
-    console.log(catRepo);
     var cat = catRepo.create();
-    console.log(cat);
     cat.name = name;
-    console.log(cat);
     catRepo.save(cat);
   }
 }

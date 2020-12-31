@@ -15,10 +15,13 @@ export class TrainingEntry {
     idTraining!: number;
 
     @Column("int")
-    repCount!: number;
+    repCount: number | undefined;
 
     @Column("int")
-    executionTime!: number; //stored as number of seconds
+    setCount: number | undefined;
+
+    @Column("int")
+    executionTime: number | undefined; //stored as number of seconds
 
     @Column("int")
     order!: number;

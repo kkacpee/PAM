@@ -24,20 +24,21 @@ interface Props {
 // CSS prop: calendarBackground
 export default function CalendarScreen({ navigation }: Props) {
   const controller = new CalendarController();
-
-  const trainingsState = useAsync(() => controller.GetDummyTrainings(), [
+  const currentDate = new Date();
+  const trainingsState = useAsync(() => controller.GetCalendarEntriesInMonth(currentDate.getFullYear(), currentDate.getMonth()), [
     useIsFocused(),
   ]);
 
-  const entries = trainingsState.value?.entries;
+  const entries = trainingsState.value;
   var markedDates = mapEntriesToObject(entries);
 
   return (
     <View style={styles.container}>
-      <Calendar theme={calendarTheme} markedDates={markedDates}/>
-      <AsyncStateGuard asyncState={trainingsState}>
+      <Calendar theme={calendarTheme} 
+      markedDates={markedDates}/>
+      <AsyncStateGuard state={trainingsState}>
         <FlatList
-          data={trainingsState.value?.entries}
+          data={trainingsState.value}
           style={styles.list}
           contentContainerStyle={styles.listContainer}
           keyExtractor={(item) => item.title}

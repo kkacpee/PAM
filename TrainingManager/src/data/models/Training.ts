@@ -15,6 +15,18 @@ export class Training {
     })
     name!: string;
 
+    @Column({
+        length: 300,
+        type: "varchar"
+    })
+    description!: string;
+
+    @Column({
+        length: 100,
+        type: "varchar"
+    })
+    iconName!: string; 
+
     @Column("boolean")
     isActive!: boolean;
 

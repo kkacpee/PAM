@@ -10,7 +10,7 @@ export type BottomTabParamList = {
 };
 
 export type HomeParamList = {
-  OngoingTrainingScreen: undefined;
+  OngoingTrainingScreen: { trainingId: number };
   HomeScreen: undefined;
 };
 
@@ -33,5 +33,5 @@ export type AtlasParamList = {
 export type TrainingsParamList = {
   AddTrainingScreen: undefined;
   TrainingsScreen: undefined;
-  TrainingDetailsScreen: { trainingId: number};
+  TrainingDetailsScreen: { trainingId: number };
 };

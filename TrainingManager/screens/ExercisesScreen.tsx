@@ -28,7 +28,7 @@ export default function ExercisesScreen({ navigation }: Props) {
   ]);
 
   return (
-    <AsyncStateGuard asyncState={state}>
+    <AsyncStateGuard state={state}>
       <SafeAreaView style={styles.container}>
         <ImageBackground
           source={require("../assets/images/ExerciseBg.png")}
@@ -36,6 +36,7 @@ export default function ExercisesScreen({ navigation }: Props) {
         >
           <SectionList
             sections={state.value!}
+            keyExtractor={item => item.name}
             renderItem={({ item }) => <Item title={item.name} />}
             renderSectionHeader={({ section: { name } }) => (
               <Text style={styles.header}>{name}</Text>

@@ -17,8 +17,8 @@ export class TrainingPlanEntry {
     @Column("float")
     multiplier!: number;
 
-    @Column("datetime")
-    date!: Date;
+    @Column("int")
+    dayOfWeek!: number;
 
     @ManyToOne(() => Training, training => training.entries)
     @JoinTable({ name: "idTraining" })

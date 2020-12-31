@@ -1,105 +1,128 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from "react";
+import { View, Text } from "react-native";
 import { Picker } from "@react-native-community/picker";
-import { Button, Input, Overlay } from 'react-native-elements';
-import styles from '../../constants/TrainingDetailsStyles';
+import { Button, Input, Overlay } from "react-native-elements";
+import styles from "../../constants/TrainingDetailsStyles";
+import OrangeTheme from "../../constants/OrangeTheme";
+import useAsync from "react-use/lib/useAsync";
+import TrainingController from "../../src/controllers/TrainingController";
+import AsyncStateGuard from "../AsyncStateGuard";
+import { Exercise } from "../../src/data/models/Exercise";
 
 export interface Props {
-  title: string,
-  fnc:(name:string) => void
+  title: string;
+  fnc: (exercise: Exercise, reps: number, series: number, time: number) => void;
 }
 
-export interface Exercise {
-    id: number,
-    name: string,
-    type: number
-}
-
-const items:Exercise[] = [{
-    id: 1,
-    name: 'Dupa1',
-    type: 1
-},{
-    id: 2,
-    name: 'Dupa2',
-    type: 2
-},{
-    id: 3,
-    name: 'Dupa3',
-    type: 1
-},{
-    id: 4,
-    name: 'Dupa4',
-    type: 2
-},{
-    id: 5,
-    name: 'Dupa5',
-    type: 1
-}]
 const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
+  var controller = new TrainingController();
+
   const [visible, setVisible] = useState(false);
   const [exerciseId, setExerciseId] = useState(0);
-  const [exercises, setExercises] = useState<Exercise[]>(items);
   const [reps, setReps] = useState(0);
+  const [sets, setSets] = useState(0);
   const [time, setTime] = useState(0);
   const toggleOverlay = () => {
     setVisible(!visible);
   };
 
+  const state = useAsync(() => controller.GetAllExercisesAsync());
+  const exercises = state.value;
+  const currentType = exercises?.find((x) => x.id == exerciseId)?.type.id;
+
   let exercisePickerItems = exercises?.map((s, i) => {
     return <Picker.Item key={i} value={s.id} label={s.name} />;
   });
 
+  const getCurrentExercise = () => {
+    let exercise = exercises?.find((value) => value.id === exerciseId);
+    if (exercise) {
+      return exercise;
+    } else {
+      // Shouldn't happen
+      return exercises![0];
+    }
+  };
+
   return (
     <>
-      <Button title='Add Exercise' onPress={toggleOverlay} buttonStyle={styles.button} titleStyle={{color: styles.name.color}} />
+      <Button
+        title="Add exercise"
+        onPress={toggleOverlay}
+        buttonStyle={{
+          marginBottom: 4,
+          borderWidth: 1,
+          borderColor: OrangeTheme.colors.border,
+          borderRadius: 4,
+          backgroundColor: OrangeTheme.colors.background,
+        }}
+        titleStyle={{ color: styles.name.color }}
+      />
 
-      <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={styles.modalContainer}>
+      <Overlay
+        isVisible={visible}
+        onBackdropPress={toggleOverlay}
+        overlayStyle={styles.modalContainer}
+      >
+        <AsyncStateGuard state={state}>
           <>
-          <Text style={styles.pickerLabel}>{props.title}</Text>
-          <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={exercises?.find(x => x.id == exerciseId)?.name}
-            style={styles.picker}
-            onValueChange={(itemValue) =>
-                setExerciseId(Number(itemValue))
-            }
-            itemStyle={styles.item}
-          >
-            {exercisePickerItems}
-          </Picker>
-        </View>
-        {(exercises?.find(x => x.id == exerciseId)?.type == 1) ?
-        <View>
-            <Input 
-             label="Reps"
-             labelStyle={styles.inputLabel}
-             value={reps.toString()}
-             onChangeText={(value) => setReps(Number(value))}
-             inputStyle={styles.input}
-             inputContainerStyle={{ borderColor: styles.input.color }}
+            <Text style={styles.pickerLabel}>{props.title}</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={
+                  exercises?.find((x) => x.id === exerciseId)?.name
+                }
+                style={styles.picker}
+                onValueChange={(itemValue) => setExerciseId(Number(itemValue))}
+                itemStyle={styles.item}
+              >
+                {exercisePickerItems}
+              </Picker>
+            </View>
+            {currentType ? (
+              <View>
+                <Input
+                  label="Reps"
+                  labelStyle={styles.inputLabel}
+                  value={reps.toString()}
+                  onChangeText={(value) => setReps(Number(value))}
+                  inputStyle={styles.input}
+                  inputContainerStyle={{ borderColor: styles.input.color }}
+                />
+                <Input
+                  label="Sets"
+                  labelStyle={styles.inputLabel}
+                  value={sets.toString()}
+                  onChangeText={(value) => setSets(Number(value))}
+                  inputStyle={styles.input}
+                  inputContainerStyle={{ borderColor: styles.input.color }}
+                />
+              </View>
+            ) : (
+              <View>
+                <Input
+                  label="Time"
+                  labelStyle={styles.inputLabel}
+                  value={time.toString()}
+                  onChangeText={(value) => setTime(Number(value))}
+                  inputStyle={styles.input}
+                  inputContainerStyle={{ borderColor: styles.input.color }}
+                />
+              </View>
+            )}
+            <Button
+              title="Ok"
+              onPress={() => {
+                props.fnc(getCurrentExercise(), reps, sets, time);
+              }}
+              buttonStyle={styles.modalOkButton}
+              titleStyle={{ color: styles.name.color }}
             />
-        </View>    
-        :
-        <View>
-            <Input 
-             label="Time"
-             labelStyle={styles.inputLabel}
-             value={time.toString()}
-             onChangeText={(value) => setTime(Number(value))}
-             inputStyle={styles.input}
-             inputContainerStyle={{ borderColor: styles.input.color }}
-            />
-        </View>   
-    }
-        <Button title="Ok" onPress={() => {}} 
-        buttonStyle={styles.modalOkButton}
-        titleStyle={{color: styles.name.color}}
-        />
-       </>
+          </>
+        </AsyncStateGuard>
       </Overlay>
     </>
   );
 };
 
-export default AddExerciseToTrainingModal
+export default AddExerciseToTrainingModal;
