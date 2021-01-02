@@ -8,6 +8,7 @@ import {
   AddTrainingViewModel,
 } from "../viewmodel/ViewModelTypes";
 import BaseController from "./BaseController";
+import { TrainingHistory } from "data/models/TrainingHistory";
 
 export default class TrainingController extends BaseController {
   constructor() {
@@ -36,14 +37,17 @@ export default class TrainingController extends BaseController {
   public async AddTrainingPlanAsync(model: AddTrainingPlanViewModel) {
     var planRepo = this.connection.getRepository(TrainingPlan);
     var entriesRepo = this.connection.getRepository(TrainingPlanEntry);
+    //var historyRepo = this.connection.getRepository(TrainingHistory);
 
+    console.log(await entriesRepo.find());
     var plan = planRepo.create(model);
     plan.isActive = true;
-
+    plan.pushNotification = model.notification;
+    plan.alarm = true;
     var entries = new Array<TrainingPlanEntry>();
-    for (var entryModel of model.entryModels) {
+    for (var entryModel of model.entries) {
       var entry = entriesRepo.create();
-      entry.dayOfWeek = this.mapDayOfWeek(entryModel.dayOfWeek);
+      entry.dayOfWeek = entryModel.dayOfWeek;
       entry.idTraining = entryModel.idTraining;
       entries.push(entry);
     }

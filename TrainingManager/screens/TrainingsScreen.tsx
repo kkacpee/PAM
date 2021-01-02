@@ -45,7 +45,7 @@ export default function TrainingsScreen({ navigation }: Props) {
       ?.map((s, i) => {
         return (
           <TrainingGridItem
-            onPress={(id) => {}}
+            onPress={(id) => {navigation.navigate("TrainingDetailsScreen", {trainingId: id})}}
             model={{ name: s.name, id: s.id, icon: s.iconName }}
             index={i}
           />
@@ -62,7 +62,7 @@ export default function TrainingsScreen({ navigation }: Props) {
       <View style={styles.row}>
         {row.map((model, i) => (
           <TrainingGridItem
-            onPress={(id) => {}}
+            onPress={(id) => {navigation.navigate("TrainingDetailsScreen", {trainingId: id})}}
             model={{ name: model.name, icon: model.iconName, id: model.id }}
             index={i}
           />

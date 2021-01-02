@@ -85,16 +85,17 @@ export default function AddTrainingPlanScreen({ navigation }: Props) {
   const [dateTo, setDateTo] = useState<Date>(new Date());
   const [days, setDays] = useState(defaultDays);
 
-  const model = {
+  const model:AddTrainingPlanViewModel = {
     name: name,
     notification: notification,
     dateFrom: dateFrom,
     dateTo: dateTo,
-    entryModels: days
+    entries: days
       .filter((x) => x.trainingId !== -1)
       .map((value) => ({
-        dayOfWeek: value.name,
+        dayOfWeek: controller.mapDayOfWeek(value.name),
         idTraining: value.trainingId,
+        name: value.name
       })),
   };
   // END MODEL
@@ -128,9 +129,11 @@ export default function AddTrainingPlanScreen({ navigation }: Props) {
   });
 
   const setItem = (dayName: string, trainingId: number) => {
+    console.log(trainingsState.value);
     var items = days.filter((x) => x.name !== dayName);
     var index = controller.mapDayOfWeek(dayName).toString();
-    setDays([...items, { name: dayName, trainingId: trainingId, key: index }]);
+    setDays([...items, { name: dayName, trainingId: trainingId, key: index }].sort((a,b) => {return Number(a.key) - Number(b.key)}));
+    
   };
   // END FUNCTION
 
@@ -282,7 +285,7 @@ const renderTrainingItem = (
       </Text>
       <Picker
         selectedValue={itemInfo.item.trainingId}
-        onValueChange={(itemValue) => setItem(itemInfo.item.name, itemInfo.item.trainingId)}
+        onValueChange={(itemValue) => setItem(itemInfo.item.name, Number(itemValue))}
         style={{
           height: 40,
           flex: 1,
