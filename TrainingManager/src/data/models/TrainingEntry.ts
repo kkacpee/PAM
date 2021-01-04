@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable } from "typeorm/browser";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable, JoinColumn } from "typeorm/browser";
 import { Exercise } from "./Exercise";
 import { Training } from "./Training";
 
@@ -29,7 +29,7 @@ export class TrainingEntry {
     @ManyToOne(() => Exercise, exercise => exercise.entries, {
         eager: true
     })
-    @JoinTable({ name: "idExercise" })
+    @JoinColumn({ name: "idExercise", referencedColumnName: "id" })
     exercise!: Exercise;
 
     @ManyToOne(() => Training, training => training.exercises, {

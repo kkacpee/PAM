@@ -12,6 +12,7 @@ import OrangeTheme from './constants/OrangeTheme';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
+import { ExerciseType } from './src/data/models/ExerciseType';
 
 export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -38,7 +39,17 @@ export default function App() {
 
   const isLoadingComplete = useCachedResources();
 
-  var state = useAsync(async () => await createConnection(dbConfig));
+  var state = useAsync(async () => {
+    const conn = await createConnection(dbConfig);
+    
+    const typeRepo = conn.getRepository(ExerciseType);
+    var types = await typeRepo.find();
+    if (types.length < 2) {
+      const type1 = typeRepo.create({ name: "reps"});
+      const type2 = typeRepo.create({name: "time"});
+      await typeRepo.save([type1, type2]);
+    }
+  });
 
   if (!isLoadingComplete || state.loading) {
     return null;

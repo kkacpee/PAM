@@ -15,6 +15,7 @@ export type CalendarEntryViewModel = {
   date: Date;
   title: string;
   state: CalendarEntryState;
+  idTrainingPlan: number;
 };
 
 export type CalendarEntryState = "finished" | "missed" | "notStarted";
@@ -25,15 +26,16 @@ export type HomeViewModel = {
   leftCount: number;
   todaysTrainingName: string;
   todaysTrainingId: number | undefined;
+  todaysPlanId: number | undefined;
 };
 
 export type OngoingTrainingViewModel = {
-  name: string,
-  repCount: number,
-  setCount: number,
-  time: number,
-  isTimed: boolean
-}[]
+  name: string;
+  repCount: number;
+  setCount: number;
+  time: number;
+  isTimed: boolean;
+}[];
 
 export type AddTrainingViewModel = {
   name: string;

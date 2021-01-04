@@ -16,7 +16,9 @@ interface Props {
 
 export default function HomeScreen({ navigation }: Props) {
   const controller = new HomeController();
-  const state = useAsync(() => controller.GetHomeViewModelAsync(), [useIsFocused()]);
+  const state = useAsync(() => controller.GetHomeViewModelAsync(), [
+    useIsFocused(),
+  ]);
 
   const isTrainingToday = state.value?.todaysTrainingId != null;
 
@@ -48,7 +50,12 @@ export default function HomeScreen({ navigation }: Props) {
             disabled={!isTrainingToday}
             titleStyle={{ color: OrangeTheme.colors.text }}
             // Forcing evaluation. Training id should be defined at this point.
-            onPress={() => navigation.navigate("OngoingTrainingScreen", { trainingId: state.value!.todaysTrainingId!})} 
+            onPress={() =>
+              navigation.navigate("OngoingTrainingScreen", {
+                trainingId: state.value!.todaysTrainingId!,
+                trainingPlanId: state.value!.todaysPlanId!,
+              })
+            }
             buttonStyle={styles.button}
           />
         </ImageBackground>

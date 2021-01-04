@@ -28,24 +28,20 @@ export default function CalendarScreen({ navigation }: Props) {
   const currentDate = new Date();
   const [entries, setEntries] = useState<CalendarEntryViewModel[]>([]);
   const trainingsState = useAsync(async () => {
-    console.log("Starting async");
     let entries = await controller.GetCalendarEntriesInMonth(
       currentDate.getFullYear(),
       currentDate.getMonth()
     );
     setEntries(entries);
-    console.log("Ending async");
   }, [useIsFocused()]);
 
   const [state, getEntries] = useAsyncFn(async (date: DateObject) => {
     console.log("On month change starting");
     var entries = await controller.GetCalendarEntriesInMonth(
       date.year,
-      date.month
+      date.month - 1 //MAGIC
     );
     setEntries(entries);
-    console.log(entries);
-    console.warn("ended");
   });
 
   var markedDates = mapEntriesToObject(entries);
@@ -104,8 +100,6 @@ function mapEntriesToObject(entries: CalendarEntryViewModel[] | undefined) {
       entry.date.getFullYear(), 
       entry.date.getMonth(),
       entry.date.getDate() + 1).toISOString().substring(0, 10);
-    console.log(date);
-    console.log(entry.date.getDate());
     const color = mapEntryStateToColor(entry.state);
     markedDates[date] = { marked: true, dotColor: color };
   }

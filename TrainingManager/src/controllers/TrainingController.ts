@@ -8,7 +8,6 @@ import {
   AddTrainingViewModel,
 } from "../viewmodel/ViewModelTypes";
 import BaseController from "./BaseController";
-import { TrainingHistory } from "data/models/TrainingHistory";
 
 export default class TrainingController extends BaseController {
   constructor() {
