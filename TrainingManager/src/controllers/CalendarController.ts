@@ -8,8 +8,6 @@ import * as Notifications from "expo-notifications";
 import { TrainingPlan } from "../data/models/TrainingPlan";
 import { TrainingPlanEntry } from "../data/models/TrainingPlanEntry";
 import { Training } from "../data/models/Training";
-import { In } from "typeorm/browser";
-import { Console } from "console";
 
 export default class CalendarController extends BaseController {
   constructor() {
@@ -84,7 +82,6 @@ export default class CalendarController extends BaseController {
 
   private getCalendarEntryState(entry: TrainingHistory): CalendarEntryState {
     var currentDate = new Date(Date.now());
-    console.log("Current date: ", currentDate);
     if (entry.isFinished) {
       return "finished";
     } else if (entry.date < currentDate) {
@@ -110,8 +107,6 @@ export default class CalendarController extends BaseController {
     year: number,
     month: number
   ): Promise<CalendarEntryViewModel[]> {
-    console.log(year + "/" +month);
-
     const planRepo = this.connection.getRepository(TrainingPlan);
     const entryRepo = this.connection.getRepository(TrainingPlanEntry);
     const trainingRepo = this.connection.getRepository(Training);
@@ -131,9 +126,7 @@ export default class CalendarController extends BaseController {
     var result = new Array<CalendarEntryViewModel>();
     for (const plan of plans) {
       let entries = await entryRepo.find({ idTrainingPlan: plan.id });
-      console.log(plan.dateFrom);
       let firstDayInMonth = new Date(year, month, 1);
-      console.log(firstDayInMonth);
       let currentDate = new Date();
       if (
         firstDayInMonth < currentDate &&
@@ -146,7 +139,6 @@ export default class CalendarController extends BaseController {
       if (firstDayInMonth < plan.dateFrom) {
         firstDayInMonth = plan.dateFrom;
       }
-      console.log(currentDate);
 
       for (let entry of entries) {
         let dayOfWeekDiff = (entry.dayOfWeek - firstDayInMonth.getDay()) % 7;
@@ -167,13 +159,11 @@ export default class CalendarController extends BaseController {
             idTrainingPlan: plan.id,
           });
           let nextDay = trainingDay.getDate() + 7;
-          console.log(nextDay);
           trainingDay = new Date(
             firstDayInMonth.getFullYear(),
             firstDayInMonth.getMonth(),
             nextDay
           );
-          console.log(trainingDay);
         }
       }
     }
