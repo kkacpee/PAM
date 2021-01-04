@@ -38,6 +38,7 @@ export type OngoingTrainingViewModel = {
 export type AddTrainingViewModel = {
   name: string;
   description: string;
+  isFavourite: boolean;
   iconName: string;
   exerciseEntries: ExerciseEntryViewModel[];
 };
@@ -55,11 +56,10 @@ export type AddTrainingPlanViewModel = {
   notification: boolean;
   dateFrom: Date;
   dateTo: Date;
-  entries: TrainingEntryViewModel[];
+  entryModels: TrainingEntryViewModel[];
 };
 
 export type TrainingEntryViewModel = {
   dayOfWeek: number;
   idTraining: number;
-  name: string;
 };

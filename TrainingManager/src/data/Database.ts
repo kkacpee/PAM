@@ -15,7 +15,7 @@ export const dbConfig : ConnectionOptions = {
     name: connectionName,
     type: 'expo',
     database: 'TrainingManager',
-    logging: ['error', 'query', 'schema'],
+    logging: ['error'],
     driver: require('expo-sqlite'),
     synchronize: true, //Drops database every deploy
     entities: [TrainingEntry, Exercise, ExerciseCategory, ExerciseType, Training, TrainingPlan, TrainingPlanEntry, TrainingHistory],

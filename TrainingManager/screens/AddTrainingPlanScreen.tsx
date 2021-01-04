@@ -5,6 +5,7 @@ import {
   ImageBackground,
   FlatList,
   ListRenderItemInfo,
+  ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import { Button, CheckBox, Input } from "react-native-elements";
@@ -13,12 +14,12 @@ import styles from "../constants/AddScreenStyles";
 import AsyncStateGuard from "../components/AsyncStateGuard";
 import useAsync from "react-use/lib/useAsync";
 import TrainingController from "../src/controllers/TrainingController";
-import { useIsFocused } from "@react-navigation/native";
+import { RouteProp, useIsFocused } from "@react-navigation/native";
 import DateInputWithModal from "../components/Modals/DateInputWithModal";
 import { TabBar, TabView } from "react-native-tab-view";
 import useAsyncFn from "react-use/lib/useAsyncFn";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { AtlasParamList } from "../types";
+import { AtlasParamList, CalendarParamList } from "../types";
 import { AddTrainingPlanViewModel } from "viewmodel/ViewModelTypes";
 
 const defaultDays = [
@@ -72,7 +73,7 @@ const noTrainingDummy = {
 };
 
 interface Props {
-  navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">;
+  navigation: StackNavigationProp<CalendarParamList, "AddTrainingPlanScreen">;
 }
 
 export default function AddTrainingPlanScreen({ navigation }: Props) {
@@ -90,7 +91,7 @@ export default function AddTrainingPlanScreen({ navigation }: Props) {
     notification: notification,
     dateFrom: dateFrom,
     dateTo: dateTo,
-    entries: days
+    entryModels: days
       .filter((x) => x.trainingId !== -1)
       .map((value) => ({
         dayOfWeek: controller.mapDayOfWeek(value.name),
@@ -112,7 +113,7 @@ export default function AddTrainingPlanScreen({ navigation }: Props) {
   const [savingState, AddTrainingPlanAsync] = useAsyncFn(
     async (model: AddTrainingPlanViewModel) => {
       await controller.AddTrainingPlanAsync(model);
-      navigation.navigate("TrainingsScreen");
+      navigation.navigate("CalendarScreen");
     }
   );
 
@@ -138,7 +139,14 @@ export default function AddTrainingPlanScreen({ navigation }: Props) {
   // END FUNCTION
 
   const infoRoute = () => (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={{
+        marginVertical: 30,
+        width: "80%",
+        alignSelf: "center",
+        backgroundColor: "rgba(0, 0, 0, 0)",
+      }}
+    >
       <Input
         label="Name"
         labelStyle={styles.inputLabel}
@@ -156,17 +164,14 @@ export default function AddTrainingPlanScreen({ navigation }: Props) {
         checked={notification}
         onPress={() => setNotification(!notification)}
       />
+
       <DateInputWithModal
         title={"Date from"}
         date={dateFrom}
         setDate={setDateFrom}
       />
-      <DateInputWithModal
-        title={"Date to"}
-        date={dateTo}
-        setDate={setDateTo}
-      />
-    </View>
+      <DateInputWithModal title={"Date to"} date={dateTo} setDate={setDateTo} />
+    </ScrollView>
   );
 
   const trainingsRoute = () => (
@@ -256,12 +261,16 @@ const renderTabBar = (props: any) => (
 );
 
 const renderTrainingItem = (
-  itemInfo: ListRenderItemInfo<{ name: string; trainingId: number; key: string }>,
+  itemInfo: ListRenderItemInfo<{
+    name: string;
+    trainingId: number;
+    key: string;
+  }>,
   setItem: (dayName: string, id: number) => void,
   pickerItems: JSX.Element[]
 ) => {
   return (
-    <View 
+    <View
       style={{
         backgroundColor: OrangeTheme.colors.background,
         borderColor: OrangeTheme.colors.text,

@@ -26,6 +26,7 @@ export default class ExerciseController extends BaseController {
       }
 
       var exercises = await category.exercises;
+      console.log(exercises);
       result.push(<CategoryViewModel>{
         name: category.name,
         data: Enumerable.from(exercises)

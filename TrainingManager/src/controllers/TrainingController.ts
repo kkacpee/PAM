@@ -21,7 +21,7 @@ export default class TrainingController extends BaseController {
 
     var training = trainRepo.create(model);
     training.isActive = true;
-    training.isFavourite = false;
+    training.isFavourite = model.isFavourite;
 
     var entries = new Array<TrainingEntry>();
     for (var entryModel of model.exerciseEntries) {
@@ -31,29 +31,113 @@ export default class TrainingController extends BaseController {
     }
     training.exercises = entries;
 
+    console.log(entries);
+
     await trainRepo.save(training);
+    await entriesRepo.save(entries);
   }
 
   public async AddTrainingPlanAsync(model: AddTrainingPlanViewModel) {
-    var planRepo = this.connection.getRepository(TrainingPlan);
-    var entriesRepo = this.connection.getRepository(TrainingPlanEntry);
-    //var historyRepo = this.connection.getRepository(TrainingHistory);
+    this.connection.transaction(async (manager) => {
+      var planRepo = this.connection.getRepository(TrainingPlan);
+      var entriesRepo = this.connection.getRepository(TrainingPlanEntry);
+      //var historyRepo = this.connection.getRepository(TrainingHistory);
 
-    console.log(await entriesRepo.find());
-    var plan = planRepo.create(model);
-    plan.isActive = true;
-    plan.pushNotification = model.notification;
-    plan.alarm = true;
-    var entries = new Array<TrainingPlanEntry>();
-    for (var entryModel of model.entries) {
-      var entry = entriesRepo.create();
-      entry.dayOfWeek = entryModel.dayOfWeek;
-      entry.idTraining = entryModel.idTraining;
-      entries.push(entry);
+      var plan = planRepo.create(model);
+      plan.isActive = true;
+      plan.pushNotification = model.notification;
+      plan.alarm = true;
+
+      plan = await planRepo.save(plan);
+
+      var entries = new Array<TrainingPlanEntry>();
+      for (var entryModel of model.entryModels) {
+        var entry = entriesRepo.create();
+        entry.dayOfWeek = entryModel.dayOfWeek;
+        entry.idTraining = entryModel.idTraining;
+        entry.idTrainingPlan = plan.id;
+        entry.multiplier = 1;
+        entries.push(entry);
+      }
+      plan.entries = entries;
+
+      await entriesRepo.save(entries);
+    });
+  }
+
+  public async GetTrainingById(id: number): Promise<AddTrainingViewModel> {
+    let trainRepo = this.connection.getRepository(Training);
+    let entriesRepo = this.connection.getRepository(TrainingEntry);
+    let exerciseRepo = this.connection.getRepository(Exercise);
+
+    let training = await trainRepo.findOne(id);
+    let entries = await entriesRepo.find({ idTraining: id });
+    let exercises = await exerciseRepo.findByIds(
+      entries.map((value) => value.idExercise)
+    );
+
+    console.log(entries);
+
+    let entryModels = entries.map((value) => ({
+      idExercise: value.idExercise,
+      name: exercises.find((e) => e.id === value.idExercise)!.name,
+      repCount: value.repCount,
+      setCount: value.setCount,
+      executionTime: value.executionTime,
+    }));
+
+    let model: AddTrainingViewModel = {
+      name: training?.name ?? "",
+      description: training?.description ?? "",
+      isFavourite: training?.isFavourite ?? false,
+      iconName: training?.iconName ?? "weight-pound",
+      exerciseEntries: entryModels,
+    };
+
+    return model;
+  }
+
+  public async DeleteTrainingAsync(id: number) {
+    var shouldDeleteSoft = await this.isTrainingOnAnyPlan(id);
+    if (shouldDeleteSoft) {
+      await this.deleteTrainingSoftAsync(id);
+    } else {
+      await this.deleteTrainingHardAsync(id);
     }
-    plan.entries = entries;
+  }
 
-    await planRepo.save(plan);
+  public async UpdateTrainingAsync(id: number, model: AddTrainingViewModel) {
+    await this.connection.transaction(async (manager) => {
+      let trainRepo = manager.getRepository(Training);
+      let entriesRepo = manager.getRepository(TrainingEntry);
+
+      var training = await trainRepo.findOne(id);
+
+      if (!training) {
+        // Nothing to update.
+        return;
+      }
+
+      const { exerciseEntries, ...data } = model;
+      await trainRepo.update(id, data);
+      training = await trainRepo.findOne(id); // Refresh local after update
+      await trainRepo.save(training!);
+
+      entriesRepo.delete({ idTraining: id });
+
+      var entries = new Array<TrainingEntry>();
+      for (var entryModel of exerciseEntries) {
+        var entry = entriesRepo.create(entryModel);
+        entry.training = training!;
+        entry.idTraining = training!.id;
+        entry.order = exerciseEntries.indexOf(entryModel);
+        entry.idExercise = entryModel.idExercise;
+        entries.push(entry);
+      }
+      training!.exercises = entries;
+
+      await entriesRepo.save(entries);
+    });
   }
 
   public async GetAllExercisesAsync(): Promise<Exercise[]> {
@@ -84,6 +168,28 @@ export default class TrainingController extends BaseController {
         return 6;
       default:
         throw new Error("Invalid day name");
+    }
+  }
+
+  private async isTrainingOnAnyPlan(id: number): Promise<boolean> {
+    var repo = this.connection.getRepository(TrainingPlanEntry);
+    var entriesCount = await repo.count({ idTraining: id });
+    return entriesCount !== 0;
+  }
+
+  private async deleteTrainingHardAsync(id: number): Promise<void> {
+    var repo = this.connection.getRepository(Training);
+    var training = await repo.find({ id: id });
+    repo.remove(training);
+  }
+
+  private async deleteTrainingSoftAsync(id: number): Promise<void> {
+    var repo = this.connection.getRepository(Training);
+    var training = await repo.findOne({ id: id });
+
+    if (training) {
+      training.isActive = false;
+      repo.save(training);
     }
   }
 }

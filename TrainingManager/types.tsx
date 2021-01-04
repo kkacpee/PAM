@@ -1,3 +1,5 @@
+import { AsyncState } from "react-use/lib/useAsync";
+
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
@@ -21,7 +23,10 @@ export type CalendarParamList = {
 
 export type ExercisesParamList = {
   ExercisesScreen: undefined;
-  AddExerciseScreen: undefined;
+  AddExerciseScreen: {
+    addCategory: (name: string) => Promise<void>;
+    categoryState: AsyncState<void>;
+  };
 };
 
 export type AtlasParamList = {
@@ -31,7 +36,7 @@ export type AtlasParamList = {
 };
 
 export type TrainingsParamList = {
-  AddTrainingScreen: undefined;
+  AddTrainingScreen: { trainingId: number } | undefined;
   TrainingsScreen: undefined;
   TrainingDetailsScreen: { trainingId: number };
 };

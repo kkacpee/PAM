@@ -36,7 +36,9 @@ export class Training {
     @OneToMany(() => TrainingHistory, history => history.training)
     history!: TrainingHistory[];
 
-    @OneToMany(() => TrainingEntry, entry => entry.training)
+    @OneToMany(() => TrainingEntry, entry => entry.training, {
+        onDelete: "CASCADE"
+    })
     exercises!: TrainingEntry[];
 
     @OneToMany(() => TrainingPlanEntry, entry => entry.training)

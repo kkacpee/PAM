@@ -2,7 +2,6 @@ import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import { AtlasParamList, ExercisesParamList } from "../../types";
 import ExerciseNavigator from './ExerciseNavigator';
-import TrainingsScreen from '../../screens/TrainingsScreen';
 import AtlasScreen from '../../screens/AtlasScreen';
 import TrainingNavigator from './TrainingNavigator';
 

@@ -7,25 +7,31 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 import { Picker } from "@react-native-community/picker";
-import { Button, Input } from "react-native-elements";
+import { Button, CheckBox, Input } from "react-native-elements";
 import OrangeTheme from "../constants/OrangeTheme";
 import styles from "../constants/AddScreenStyles";
 import { TabBar, TabView } from "react-native-tab-view";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import AddExerciseToTrainingModal from "../components/Modals/AddExerciseToTrainingModal";
-import { AddTrainingViewModel, ExerciseEntryViewModel } from "../src/viewmodel/ViewModelTypes";
+import {
+  AddTrainingViewModel,
+  ExerciseEntryViewModel,
+} from "../src/viewmodel/ViewModelTypes";
 import TrainingController from "../src/controllers/TrainingController";
 import { Exercise } from "../src/data/models/Exercise";
 import useAsyncFn from "react-use/lib/useAsyncFn";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { AtlasParamList } from "../types";
+import { AtlasParamList, TrainingsParamList } from "../types";
 import AsyncStateGuard from "../components/AsyncStateGuard";
+import useAsync from "react-use/lib/useAsync";
+import { RouteProp, useIsFocused } from "@react-navigation/native";
 
 interface Props {
-  navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">;
+  navigation: StackNavigationProp<AtlasParamList, "TrainingsScreen">;
+  route: RouteProp<TrainingsParamList, "AddTrainingScreen">;
 }
 
-export default function AddTrainingScreen({ navigation }: Props) {
+export default function AddTrainingScreen({ navigation, route }: Props) {
   var controller = new TrainingController();
 
   // MODEL
@@ -33,8 +39,10 @@ export default function AddTrainingScreen({ navigation }: Props) {
   const [description, setDescription] = useState("");
   const [selectedIcon, setSelectedIcon] = useState<string>("weight-pound");
   const [entries, setEntries] = useState<Array<ExerciseEntryViewModel>>([]);
+  const [isFavourite, setIsFavourite] = useState(false);
   // END MODEL
 
+  const trainingId = route.params?.trainingId;
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "info", title: "Information" },
@@ -61,55 +69,112 @@ export default function AddTrainingScreen({ navigation }: Props) {
     setEntries([...entries, entry]);
   };
 
-  const model = {
+  const model: AddTrainingViewModel = {
     name: name,
     description: description,
+    isFavourite: isFavourite,
     iconName: selectedIcon,
     exerciseEntries: entries,
   };
 
-  const [state, addTrainingAsync] = useAsyncFn(async (model : AddTrainingViewModel) => {
-    await controller.AddTrainingAsync(model);
+  const modelState = useAsync(async () => {
+    if (!trainingId) {
+      // Requested exercise creation form.
+      return;
+    }
+
+    let model = await controller.GetTrainingById(trainingId);
+
+    setName(model.name);
+    setDescription(model.description);
+    setIsFavourite(model.isFavourite);
+    setSelectedIcon(model.iconName);
+    setEntries(model.exerciseEntries);
+  }, [useIsFocused()]);
+
+  const [addState, addTrainingAsync] = useAsyncFn(
+    async (model: AddTrainingViewModel) => {
+      if (trainingId) {
+        await controller.UpdateTrainingAsync(trainingId, model);
+      } else {
+        await controller.AddTrainingAsync(model);
+      }
+      navigation.navigate("TrainingsScreen");
+    }
+  );
+
+  const [deleteState, deleteTrainingAsync] = useAsyncFn(async (id: number) => {
+    await controller.DeleteTrainingAsync(id);
     navigation.navigate("TrainingsScreen");
   });
 
   const infoRoute = () => {
     return (
-      <SafeAreaView style={styles.container}>
-        <Input
-          label="Name"
-          labelStyle={styles.inputLabel}
-          value={name}
-          onChangeText={(itemValue) => {
-            setName(itemValue);
-            console.log("ITEMVALUE: " + itemValue);
-            console.log("NAME:" + name);
+      <SafeAreaView>
+        <ScrollView
+          contentContainerStyle={{
+            marginVertical: 30,
+            width: "80%",
+            alignSelf: "center",
+            backgroundColor: "rgba(0, 0, 0, 0)",
           }}
-          inputStyle={styles.input}
-          inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}
-        />
-        <Input
-          label="Description"
-          labelStyle={styles.inputLabel}
-          value={description}
-          onChangeText={(itemValue) => setDescription(itemValue)}
-          inputStyle={styles.input}
-          inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}
-          multiline={true}
-          numberOfLines={4}
-        />
-        <Text style={styles.pickerLabel}>Icon</Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedIcon}
-            style={styles.picker}
-            onValueChange={(itemValue) => setSelectedIcon(itemValue.toString())}
-            itemStyle={styles.item}
+        >
+          <Input
+            label="Name"
+            labelStyle={styles.inputLabel}
+            value={name}
+            onChangeText={(itemValue) => {
+              setName(itemValue);
+              console.log("ITEMVALUE: " + itemValue);
+              console.log("NAME:" + name);
+            }}
+            inputStyle={styles.input}
+            inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}
+          />
+          <Input
+            label="Description"
+            labelStyle={styles.inputLabel}
+            value={description}
+            onChangeText={(itemValue) => setDescription(itemValue)}
+            inputStyle={styles.input}
+            inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}
+            multiline={true}
+            numberOfLines={4}
+          />
+          <CheckBox
+            checkedColor={OrangeTheme.colors.text}
+            uncheckedColor={OrangeTheme.colors.text}
+            textStyle={styles.inputLabel}
+            containerStyle={styles.checkBoxContainer}
+            title={"Favourite"}
+            checkedIcon="star"
+            uncheckedIcon="star-o"
+            checked={isFavourite}
+            onPress={() => setIsFavourite(!isFavourite)}
+          />
+          <Text style={styles.pickerLabel}>Icon</Text>
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: OrangeTheme.colors.border,
+              borderRadius: 4,
+              marginBottom: 35,
+              flexDirection: "row",
+            }}
           >
-            <Picker.Item label="Weightlifting" value="weight-pound" />
-            <Picker.Item label="Conditioning" value="run-fast" />
-          </Picker>
-        </View>
+            <Picker
+              selectedValue={selectedIcon}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setSelectedIcon(itemValue.toString())
+              }
+              itemStyle={styles.item}
+            >
+              <Picker.Item label="Weightlifting" value="weight-pound" />
+              <Picker.Item label="Conditioning" value="run-fast" />
+            </Picker>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   };
@@ -130,7 +195,11 @@ export default function AddTrainingScreen({ navigation }: Props) {
           borderWidth: 1,
           borderRadius: 4,
         }}
-        ListEmptyComponent={<Text>Add exercises, please!</Text>}
+        ListEmptyComponent={
+          <Text style={{ color: OrangeTheme.colors.text, textAlign: "center"}}>
+            Add exercises, please!
+          </Text>
+        }
       />
     </SafeAreaView>
   );
@@ -151,7 +220,7 @@ export default function AddTrainingScreen({ navigation }: Props) {
   };
 
   return (
-    <AsyncStateGuard state={state}>
+    <AsyncStateGuard state={[addState, modelState, deleteState]}>
       <ImageBackground
         source={require("../assets/images/AddBg.png")}
         style={styles.image}
@@ -163,14 +232,34 @@ export default function AddTrainingScreen({ navigation }: Props) {
           style={{ borderColor: OrangeTheme.colors.text, borderBottomWidth: 1 }}
           renderTabBar={renderTabBar}
         />
-        <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginVertical: 5,
+            flexDirection: "row",
+          }}
+        >
           <Button
-            title="Add"
+            title={trainingId ? "Save" : "Add"}
             type="outline"
             titleStyle={{ color: OrangeTheme.colors.text }}
             buttonStyle={styles.addButton}
+            containerStyle={{ flex: 1 }}
             onPress={() => addTrainingAsync(model)}
           />
+          {trainingId && (
+            <>
+              <View style={{ marginHorizontal: 5 }} />
+              <Button
+                title="Delete"
+                type="outline"
+                titleStyle={{ color: OrangeTheme.colors.text }}
+                containerStyle={{ flex: 1 }}
+                buttonStyle={styles.addButton}
+                onPress={() => deleteTrainingAsync(trainingId)}
+              />
+            </>
+          )}
         </View>
       </ImageBackground>
     </AsyncStateGuard>
@@ -235,7 +324,9 @@ const renderExerciseItem = (
           width: 30,
           height: 30,
         }}
-        onPress={() => {removeEntry(itemInfo.item.idExercise), console.log(itemInfo)}}
+        onPress={() => {
+          removeEntry(itemInfo.item.idExercise), console.log(itemInfo);
+        }}
         titleStyle={{
           color: OrangeTheme.colors.background,
         }}

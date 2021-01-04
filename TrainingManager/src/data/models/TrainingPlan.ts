@@ -33,7 +33,8 @@ export class TrainingPlan {
     history!: TrainingHistory[];
 
     @OneToMany(() => TrainingPlanEntry, entry => entry.trainingPlan, {
-        eager: true
+        eager: true,
+        onDelete: "CASCADE"
     })
     entries!: TrainingPlanEntry[];
 }

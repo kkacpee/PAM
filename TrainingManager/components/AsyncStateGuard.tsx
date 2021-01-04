@@ -1,5 +1,6 @@
 import React from "react";
 import { ActivityIndicator, Text, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { AsyncState } from "react-use/lib/useAsync";
 import OrangeTheme from "../constants/OrangeTheme";
 
@@ -12,8 +13,12 @@ export default function AsyncStateGuard({ children, state }: Props) {
   const states = state instanceof Array ? state : [state];
   const isLoading = states.find((value) => value.loading) != null;
   const erronousStates = states.filter((value) => value.error != null);
-  let errorMsg = erronousStates.reduce(
+  const errorMsg = erronousStates.reduce(
     (prev, cur) => (prev = prev + cur.error?.message + "\n"),
+    ""
+  );
+  const stackTraces = erronousStates.reduce(
+    (prev, cur) => (prev = prev + cur.error?.stack + "\n"),
     ""
   );
 
@@ -28,9 +33,11 @@ export default function AsyncStateGuard({ children, state }: Props) {
   } else if (errorMsg.length != 0) {
     console.log(errorMsg);
     return (
-      <Text style={{ color: OrangeTheme.colors.text }}>
-        {"Error: \n" + errorMsg}
-      </Text>
+      <ScrollView>
+        <Text style={{ color: OrangeTheme.colors.text }}>
+          {"Error: \n" + errorMsg + "\n" + stackTraces}
+        </Text>
+      </ScrollView>
     );
   } else {
     return children;
