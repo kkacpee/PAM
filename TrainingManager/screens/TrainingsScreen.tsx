@@ -19,7 +19,9 @@ interface Props {
 
 export default function TrainingsScreen({ navigation }: Props) {
   const controller = new TrainingController();
-  const state = useAsync(async () => await controller.GetAllTrainings(), [useIsFocused()]);
+  const state = useAsync(async () => await controller.GetAllTrainings(), [
+    useIsFocused(),
+  ]);
 
   if (state.value) {
     const listToGrid = (totalColumns: Number) => {
@@ -45,7 +47,10 @@ export default function TrainingsScreen({ navigation }: Props) {
       ?.map((s, i) => {
         return (
           <TrainingGridItem
-            onPress={(id) => navigation.navigate("AddTrainingScreen", {trainingId: id})}
+            key={i}
+            onPress={(id) =>
+              navigation.navigate("AddTrainingScreen", { trainingId: id })
+            }
             model={{ name: s.name, id: s.id, icon: s.iconName }}
             index={i}
           />
@@ -58,11 +63,14 @@ export default function TrainingsScreen({ navigation }: Props) {
 
     var notFavouritesGrid = listToGrid(3);
 
-    var notFavourites = notFavouritesGrid.map((row) => (
-      <View style={styles.row}>
+    var notFavourites = notFavouritesGrid.map((row, idx) => (
+      <View key={idx} style={styles.row}>
         {row.map((model, i) => (
           <TrainingGridItem
-            onPress={(id) => navigation.navigate("AddTrainingScreen", {trainingId: id})}
+            key={i}
+            onPress={(id) =>
+              navigation.navigate("AddTrainingScreen", { trainingId: id })
+            }
             model={{ name: model.name, icon: model.iconName, id: model.id }}
             index={i}
           />
@@ -79,9 +87,14 @@ export default function TrainingsScreen({ navigation }: Props) {
           style={styles.image}
         >
           <View style={styles.container}>
-            <Text style={styles.headerText}>Favourites</Text>
-            <View style={styles.row}>{favourites!}</View>
+            <Text key={"a"} style={styles.headerText}>
+              Favourites
+            </Text>
+            <View key={"b"} style={styles.row}>
+              {favourites!}
+            </View>
             <Divider
+              key={"c"}
               style={{
                 backgroundColor: OrangeTheme.colors.text,
                 width: "100%",

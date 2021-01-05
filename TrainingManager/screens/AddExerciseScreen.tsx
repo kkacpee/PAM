@@ -5,22 +5,21 @@ import { Button, Input } from "react-native-elements";
 import OrangeTheme from "../constants/OrangeTheme";
 import styles from "../constants/AddScreenStyles";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { AtlasParamList, ExercisesParamList } from "../types";
+import { AtlasParamList } from "../types";
 import ExerciseController from "../src/controllers/ExerciseController";
 import useAsync from "react-use/lib/useAsync";
 import { ExerciseViewModel } from "../src/viewmodel/ViewModelTypes";
 import AsyncStateGuard from "../components/AsyncStateGuard";
 import AddMiscModal from "../components/Modals/AddMiscModal";
-import useAsyncFn, { AsyncState } from "react-use/lib/useAsyncFn";
-import { RouteProp } from "@react-navigation/native";
+import useAsyncFn from "react-use/lib/useAsyncFn";
+import { useIsFocused } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 
 interface Props {
   navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">;
-  route: RouteProp<ExercisesParamList, "AddExerciseScreen">;
 }
 
-export default function AddExerciseScreen({ navigation, route }: Props) {
+export default function AddExerciseScreen({ navigation }: Props) {
   const controller = new ExerciseController();
   const [types, setTypes] = useState<string[]>();
   const [categories, setCategories] = useState<string[]>([]);
@@ -35,14 +34,17 @@ export default function AddExerciseScreen({ navigation, route }: Props) {
     var model = await controller.createDefault();
     var types = await controller.getTypes();
     var categories = await controller.getCategories();
-    console.log(types);
     setTypes(types);
     setCategories(categories);
     setModel(model);
-  });
+  }, [useIsFocused()]);
+
+  const [categoryState, addCategory] = useAsyncFn((name: string) =>
+    controller.addCategory(name)
+  );
 
   const addCat = (name: string) => {
-    route.params?.addCategory(name);
+    addCategory(name);
     setCategories([...categories, name]);
   };
 
@@ -61,7 +63,7 @@ export default function AddExerciseScreen({ navigation, route }: Props) {
   });
 
   return (
-    <AsyncStateGuard state={[modelState]}>
+    <AsyncStateGuard state={[modelState, categoryState]}>
       <ImageBackground
         source={require("../assets/images/AddBg.png")}
         style={styles.image}
@@ -130,7 +132,7 @@ export default function AddExerciseScreen({ navigation, route }: Props) {
                 type="outline"
                 titleStyle={{ color: OrangeTheme.colors.text }}
                 buttonStyle={styles.addButton}
-                containerStyle={{ marginBottom: 40}}
+                containerStyle={{ marginBottom: 40 }}
                 onPress={() =>
                   addAndNavigateBack(controller, model, navigation)
                 }
@@ -148,7 +150,6 @@ function addAndNavigateBack(
   p_model: ExerciseViewModel,
   navigation: StackNavigationProp<AtlasParamList, "AtlasScreen">
 ) {
-  console.log("saving");
   controller.AddExercise(p_model).then(
     () => navigation.navigate("ExercisesScreen"),
     () =>

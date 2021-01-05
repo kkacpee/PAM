@@ -30,8 +30,6 @@ export default class TrainingController extends BaseController {
     }
     training.exercises = entries;
 
-    console.log(entries);
-
     await trainRepo.save(training);
     await entriesRepo.save(entries);
   }
@@ -74,8 +72,6 @@ export default class TrainingController extends BaseController {
     let exercises = await exerciseRepo.findByIds(
       entries.map((value) => value.idExercise)
     );
-
-    console.log(entries);
 
     let entryModels = entries.map((value) => ({
       idExercise: value.idExercise,
@@ -141,7 +137,15 @@ export default class TrainingController extends BaseController {
 
   public async GetAllExercisesAsync(): Promise<Exercise[]> {
     var repo = this.connection.getRepository(Exercise);
-    return await repo.find({ isActive: true });
+    console.log("hello from controller");
+    var result = await repo
+      .createQueryBuilder("exercise")
+      .where("exercise.isActive = :isActive", { isActive: true })
+      .innerJoinAndSelect("exercise.type", "type")
+      .getMany();
+
+    console.log(result);
+    return result;
   }
 
   public async GetAllTrainings(): Promise<Training[]> {

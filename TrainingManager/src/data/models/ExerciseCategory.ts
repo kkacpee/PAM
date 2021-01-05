@@ -1,6 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm/browser";
 import { Exercise } from "./Exercise";
 
+const module = require("./Exercise");
+
 @Entity()
 export class ExerciseCategory {
 
@@ -14,6 +16,6 @@ export class ExerciseCategory {
     name!: string;
 
     @OneToMany(() => Exercise, exercise => exercise.category) 
-    exercises!: Promise<Exercise[]>;
+    exercises!: Exercise[];
 
 }

@@ -43,6 +43,7 @@ export default function DateInputWithModal({ date, setDate, title }: Props) {
         <RNDateTimePicker
           value={date}
           onChange={(e, date) => {
+            console.log(e);
             setVisible(false);
             if (date) {
               setDate(date);

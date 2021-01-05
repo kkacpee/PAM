@@ -1,7 +1,7 @@
 import CalendarController from "../src/controllers/CalendarController";
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Calendar, DateObject } from "react-native-calendars";
+import { Calendar, CalendarDot, DateObject, MultiDotMarking } from "react-native-calendars";
 import { FlatList } from "react-native-gesture-handler";
 import AsyncStateGuard from "../components/AsyncStateGuard";
 import useAsync from "react-use/lib/useAsync";
@@ -32,7 +32,7 @@ export default function CalendarScreen({ navigation }: Props) {
       currentDate.getFullYear(),
       currentDate.getMonth()
     );
-    setEntries(entries);
+    setEntries(entries.sort((a, b) => a.date.getDate() - b.date.getDate()));
   }, [useIsFocused()]);
 
   const [state, getEntries] = useAsyncFn(async (date: DateObject) => {
@@ -51,6 +51,7 @@ export default function CalendarScreen({ navigation }: Props) {
       <Calendar
         theme={calendarTheme}
         markedDates={markedDates}
+        markingType={'multi-dot'}
         onMonthChange={(month) => {
           getEntries(month);
         }}
@@ -88,33 +89,39 @@ export default function CalendarScreen({ navigation }: Props) {
   );
 }
 
-function mapEntriesToObject(entries: CalendarEntryViewModel[] | undefined) {
+function mapEntriesToObject(entries: CalendarEntryViewModel[] | undefined) 
+: ({
+  [date: string]: MultiDotMarking;
+}) {
   if (!entries) {
-    return;
+    return {};
   }
 
-  var markedDates = {};
+  var markedDates : ({
+    [date: string]: MultiDotMarking;
+  }) = {};
   for (var entry of entries) {
     // Add one day for magic.
     const date = new Date(
       entry.date.getFullYear(), 
       entry.date.getMonth(),
       entry.date.getDate() + 1).toISOString().substring(0, 10);
-    const color = mapEntryStateToColor(entry.state);
-    markedDates[date] = { marked: true, dotColor: color };
+    const dot = mapEntryStateToDot(entry.state, entry.idTrainingPlan.toString()+entry.title);
+    const currentDots = markedDates[date]?.dots ?? [];
+    markedDates[date] = { dots: [...currentDots, dot] };
   }
 
   return markedDates;
 }
 
-function mapEntryStateToColor(state: CalendarEntryState) {
+function mapEntryStateToDot(state: CalendarEntryState, key: string) : CalendarDot {
   switch (state) {
     case "finished":
-      return "green";
+      return {key: key, color: "green"};
     case "missed":
-      return "red";
+      return {key: key, color: "red"};
     case "notStarted":
-      return "blue";
+      return {key: key, color: "blue"};
     default:
       throw new Error("Unrecognized calendar entry state.");
   }

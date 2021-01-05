@@ -27,22 +27,15 @@ export default function ExercisesScreen({ navigation }: Props) {
 
   const [deletionState, deleteAsync] = useAsyncFn((id: number) =>
     controller.deleteExerciseAsync(id)
-  );
-
-  const [categoryState, addCategory] = useAsyncFn(async (name : string) => {
-    await controller.addCategory(name);
-  });
+  ); 
 
   const state = useAsync(() => controller.GetAllExercisesCategorised(), [
     useIsFocused(),
-    deletionState.loading,
-    categoryState.loading
+    deletionState.loading
   ]);
 
-  console.log(categoryState);
-
   return (
-    <AsyncStateGuard state={[state]}>
+    <AsyncStateGuard state={[state, deletionState]}>
       <SafeAreaView style={styles.container}>
         <ImageBackground
           source={require("../assets/images/ExerciseBg.png")}
@@ -60,7 +53,7 @@ export default function ExercisesScreen({ navigation }: Props) {
           />
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("AddExerciseScreen", {categoryState: categoryState, addCategory: addCategory})}
+            onPress={() => navigation.navigate("AddExerciseScreen")}
           >
             <Text style={{ fontSize: 60 }}>+</Text>
           </TouchableOpacity>

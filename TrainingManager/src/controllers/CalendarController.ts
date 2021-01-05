@@ -8,6 +8,7 @@ import * as Notifications from "expo-notifications";
 import { TrainingPlan } from "../data/models/TrainingPlan";
 import { TrainingPlanEntry } from "../data/models/TrainingPlanEntry";
 import { Training } from "../data/models/Training";
+import { Raw } from "typeorm/browser";
 
 export default class CalendarController extends BaseController {
   constructor() {
@@ -59,7 +60,7 @@ export default class CalendarController extends BaseController {
     month: number
   ): Promise<CalendarEntryViewModel[]> {
     var repo = this.connection.getRepository(TrainingHistory);
-    var historyAll = await repo.find();
+    var historyAll = await repo.find({ relations: ["training"] });
     let history = historyAll.filter(
       (x) => x.date.getFullYear() === year && x.date.getMonth() === month
     );
@@ -110,6 +111,7 @@ export default class CalendarController extends BaseController {
     const planRepo = this.connection.getRepository(TrainingPlan);
     const entryRepo = this.connection.getRepository(TrainingPlanEntry);
     const trainingRepo = this.connection.getRepository(Training);
+    const historyRepo = this.connection.getRepository(TrainingHistory);
     let plans = await planRepo.find({ isActive: true });
     let currentPlans = plans.filter(
       (value) =>
@@ -123,17 +125,43 @@ export default class CalendarController extends BaseController {
       return [];
     }
 
+    let history = await historyRepo.find();
+    const currentDate = new Date();
+    let currentHistory = history.filter(
+      (x) =>
+        x.date.getFullYear() === currentDate.getFullYear() &&
+        x.date.getMonth() === currentDate.getMonth() &&
+        x.date.getDate() === currentDate.getDate()
+    );
+
     var result = new Array<CalendarEntryViewModel>();
     for (const plan of plans) {
       let entries = await entryRepo.find({ idTrainingPlan: plan.id });
+      const trainingTodayDone = entries.some(
+        (x) =>
+          !currentHistory.some(
+            (y) =>
+              y.date.getDay() === x.dayOfWeek &&
+              y.idTrainingPlan === plan.id &&
+              y.idTraining === x.idTraining
+          )
+      );
+
       let firstDayInMonth = new Date(year, month, 1);
-      let currentDate = new Date();
       if (
         firstDayInMonth < currentDate &&
         firstDayInMonth.getMonth() === currentDate.getMonth() &&
         firstDayInMonth.getFullYear() === currentDate.getFullYear()
       ) {
-        firstDayInMonth = currentDate;
+        if (trainingTodayDone) {
+          firstDayInMonth = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate() + 1
+          )
+        } else {
+          firstDayInMonth = currentDate;
+        }      
       }
 
       if (firstDayInMonth < plan.dateFrom) {
@@ -141,7 +169,9 @@ export default class CalendarController extends BaseController {
       }
 
       for (let entry of entries) {
-        let dayOfWeekDiff = (entry.dayOfWeek - firstDayInMonth.getDay()) % 7;
+        let dayOfWeekDiff =
+          (entry.dayOfWeek - firstDayInMonth.getDay() + 7) % 7;
+
         var trainingDay = new Date(
           firstDayInMonth.getFullYear(),
           firstDayInMonth.getMonth(),

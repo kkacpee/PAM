@@ -16,17 +16,11 @@ export default class ExerciseController extends BaseController {
 
   public async GetAllExercisesCategorised(): Promise<CategoryViewModel[]> {
     var categoryRepository = this.connection.getRepository(ExerciseCategory);
-    var categories = await categoryRepository.find();
+    var categories = await categoryRepository.find({relations: ["exercises"]});
 
     var result = new Array<CategoryViewModel>();
     for (var category of categories) {
-      //When category is freshly added, it doesn't have a key and all shit breaks loose
-      if (!category.id) {
-        continue;
-      }
-
-      var exercises = await category.exercises;
-      console.log(exercises);
+      var exercises = category.exercises;
       result.push(<CategoryViewModel>{
         name: category.name,
         data: Enumerable.from(exercises)
@@ -132,11 +126,11 @@ export default class ExerciseController extends BaseController {
     return categories.map((x) => x.name);
   }
 
-  public addCategory(name: string) {
+  public async addCategory(name: string) {
     var catRepo = this.connection.getRepository(ExerciseCategory);
     var cat = catRepo.create();
     cat.name = name;
-    catRepo.save(cat);
+    await catRepo.save(cat);
   }
 
   private async isExerciseOnAnyTraining(id: number): Promise<boolean> {

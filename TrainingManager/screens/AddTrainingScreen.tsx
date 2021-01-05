@@ -125,8 +125,6 @@ export default function AddTrainingScreen({ navigation, route }: Props) {
             value={name}
             onChangeText={(itemValue) => {
               setName(itemValue);
-              console.log("ITEMVALUE: " + itemValue);
-              console.log("NAME:" + name);
             }}
             inputStyle={styles.input}
             inputContainerStyle={{ borderColor: OrangeTheme.colors.border }}

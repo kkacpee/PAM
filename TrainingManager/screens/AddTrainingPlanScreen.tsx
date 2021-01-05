@@ -24,6 +24,11 @@ import { AddTrainingPlanViewModel } from "viewmodel/ViewModelTypes";
 
 const defaultDays = [
   {
+    name: "Sunday",
+    trainingId: -1,
+    key: "0",
+  },
+  {
     name: "Monday",
     trainingId: -1,
     key: "1",
@@ -52,11 +57,6 @@ const defaultDays = [
     name: "Saturday",
     trainingId: -1,
     key: "6",
-  },
-  {
-    name: "Sunday",
-    trainingId: -1,
-    key: "0",
   },
 ];
 

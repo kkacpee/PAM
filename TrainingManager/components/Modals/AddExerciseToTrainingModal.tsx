@@ -4,10 +4,11 @@ import { Picker } from "@react-native-community/picker";
 import { Button, Input, Overlay } from "react-native-elements";
 import styles from "../../constants/TrainingDetailsStyles";
 import OrangeTheme from "../../constants/OrangeTheme";
-import useAsync from "react-use/lib/useAsync";
 import TrainingController from "../../src/controllers/TrainingController";
 import AsyncStateGuard from "../AsyncStateGuard";
 import { Exercise } from "../../src/data/models/Exercise";
+import { useIsFocused } from "@react-navigation/native";
+import useAsync from "react-use/lib/useAsync";
 
 export interface Props {
   title: string;
@@ -18,7 +19,7 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
   var controller = new TrainingController();
 
   const [visible, setVisible] = useState(false);
-  const [exerciseId, setExerciseId] = useState(0);
+  const [exerciseId, setExerciseId] = useState(1);
   const [reps, setReps] = useState(0);
   const [sets, setSets] = useState(0);
   const [time, setTime] = useState(0);
@@ -26,10 +27,14 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
     setVisible(!visible);
   };
 
-  const state = useAsync(() => controller.GetAllExercisesAsync());
+  const state = useAsync(async () => {
+    console.log("begin load");
+    return await controller.GetAllExercisesAsync();
+  }, [useIsFocused()]);
+  console.log(state.value);
   const exercises = state.value;
-  const currentType = exercises?.find((x) => x.id === exerciseId)?.type.id;
-
+  const currentType = exercises?.find((x) => x.id === exerciseId)?.type.name;
+  console.log(currentType);
   let exercisePickerItems = exercises?.map((s, i) => {
     return <Picker.Item key={i} value={s.id} label={s.name} />;
   });
@@ -69,9 +74,7 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
             <Text style={styles.pickerLabel}>{props.title}</Text>
             <View style={styles.pickerContainer}>
               <Picker
-                selectedValue={
-                  exercises?.find((x) => x.id === exerciseId)?.id
-                }
+                selectedValue={exercises?.find((x) => x.id === exerciseId)?.id}
                 style={styles.picker}
                 onValueChange={(itemValue) => setExerciseId(Number(itemValue))}
                 itemStyle={styles.item}
@@ -79,7 +82,7 @@ const AddExerciseToTrainingModal: React.FC<Props> = (props) => {
                 {exercisePickerItems}
               </Picker>
             </View>
-            {currentType ? (
+            {currentType?.toLowerCase() == "reps" ? (
               <View>
                 <Input
                   label="Reps"

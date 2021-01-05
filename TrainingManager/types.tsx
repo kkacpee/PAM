@@ -1,5 +1,3 @@
-import { AsyncState } from "react-use/lib/useAsync";
-
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
@@ -23,10 +21,7 @@ export type CalendarParamList = {
 
 export type ExercisesParamList = {
   ExercisesScreen: undefined;
-  AddExerciseScreen: {
-    addCategory: (name: string) => Promise<void>;
-    categoryState: AsyncState<void>;
-  };
+  AddExerciseScreen: undefined;
 };
 
 export type AtlasParamList = {
